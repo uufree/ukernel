@@ -93,11 +93,19 @@ mov byte [es:0x23],0x04
 mov byte [es:0x24],'D'
 mov byte [es:0x25],0x07
 
+mov ax,103
+mov bx,10
+div bx
+
+mov byte [es:0x26],dl
+mov byte [es:0x27],'-'
+mov byte [es:0x28],dh
+
 infi:jmp near infi
 
 number db 0,0,0,0,0
 
-times 203 db 0
+times 510-($-$$) db 0
 db 0x55,0xaa
 
 
