@@ -1,131 +1,101 @@
-;first mbr
+loaderBaseAddress equ 0x0900
+loaderStartSection equ 0x02
 
-mov ax,0xb800
-mov es,ax
+SECTION mbr vstart=0x7c00
+    
+    mov ax,cs
+    mov ds,ax
+    mov es,ax
+    mov ss,ax
+    mov es,ax
+    mov sp,0x7c00
 
-;输出：Label offset:
-mov byte [es:0x00],'L'
-mov byte [es:0x01],0x07
-mov byte [es:0x02],'a'
-mov byte [es:0x03],0x07
-mov byte [es:0x04],'b'
-mov byte [es:0x05],0x07
-mov byte [es:0x06],'e'
-mov byte [es:0x07],0x07
-mov byte [es:0x08],'l'
-mov byte [es:0x09],0x07
-mov byte [es:0x0a],' '
-mov byte [es:0x0b],0x07
-mov byte [es:0x0c],'o'
-mov byte [es:0x0d],0x07
-mov byte [es:0x0e],'f'
-mov byte [es:0x0f],0x07
-mov byte [es:0x10],'f'
-mov byte [es:0x11],0x07
-mov byte [es:0x12],'s'
-mov byte [es:0x13],0x07
-mov byte [es:0x14],'e'
-mov byte [es:0x15],0x07
-mov byte [es:0x16],'t'
-mov byte [es:0x17],0x07
-mov byte [es:0x18],':'
-mov byte [es:0x19],0x07
+;清屏
+    mov ax,0x0600
+    mov bx,0x0700
+    mov cx,0
+    mov dx,0x184f
+    int 0x10
 
-;获取偏移地址
-mov ax,number
-mov bx,10
+;获取光标位置
+    mov ah,3
+    mov bh,0
+    int 0x10
 
-;设置数据段的基地址
-mov cx,cs
-mov ds,cx
+;打印字符串
+    mov ax,message
+    mov bp,ax
+    mov cx,10
+    mov ax,0x1301
+    mov bx,0x0007
+    int 0x10
 
-;个位
-mov dx,0
-div bx
-mov [0x7c00+number+0x00],dl
+    mov bx,loaderBaseAddress
+    mov eax,loaderStartSection
+    mov cx,1
+    call readDisk
 
-;十位
-xor dx,dx
-div bx
-mov [0x7c00+number+0x01],dl
+    jmp loaderBaseAddress
 
-;百位
-xor dx,dx
-div bx
-mov [0x7c00+number+0x02],dl
+readDisk:
+    mov esi,eax
+    mov di,cx
 
-;千位
-xor dx,dx
-div bx
-mov [0x7c00+number+0x03],dl
+;1.设置要读取的扇区数
+    mov dx,0x1f2
+    mov al,cl
+    out dx,al
 
-;万位
-xor dx,dx
-div bx
-mov [0x7c00+number+0x04],dl
+    mov eax,esi
 
-;用一下十进制显示标号的偏移地址
-mov al,[0x7c00+number+0x04]
-add al,0x30
-mov [es:0x1a],al
-mov byte [es:0x1b],0x04
+;2.将LBA地址存入0x1f3~0x1f6
+    mov dx,0x1f3
+    out dx,al
 
-mov al,[0x7c00+number+0x03]
-add al,0x30
-mov [es:0x1c],al
-mov byte [es:0x1d],0x04
+    mov dx,0x1f4
+    mov cl,8
+    shr eax,cl
+    out dx,al
 
-mov al,[0x7c00+number+0x02]
-add al,0x30
-mov [es:0x1e],al
-mov byte [es:0x1f],0x04
+    mov dx,0x1f5
+    shr eax,cl
+    out dx,al
 
-mov al,[0x7c00+number+0x01]
-add al,0x30
-mov [es:0x20],al
-mov byte [es:0x21],0x04
+    mov dx,0x1f6
+    shr eax,cl
+    and al,0x0f
+    or al,0xe0
+    out dx,al
 
-mov al,[0x7c00+number+0x00]
-add al,0x30
-mov [es:0x22],al
-mov byte [es:0x23],0x04
+;3.向0x1f7端口写入读命令
+    mov dx,0x1f7
+    mov al,0x20
+    out dx,al
 
-mov byte [es:0x24],'D'
-mov byte [es:0x25],0x07
+;4.检测硬件状态
+notReady:
+    nop
+    in al,dx
+    and al,0x08
+    jnz notReady
 
-mov ax,103
-mov bx,10
-div bx
+;5.从端口读数据
+    mov dx,0x1f0
+    mov ax,di
+    mov dx,256
+    mul dx
+    mov cx,ax
+    
+read:
+    in ax,dx
+    mov [bx],ax
+    add bx,2
+    loop read
 
-mov byte [es:0x26],dl
-mov byte [es:0x27],'-'
-mov byte [es:0x28],dh
+    ret
 
-infi:jmp near infi
-
-number db 0,0,0,0,0
-
+message db "hello,MBR!"
 times 510-($-$$) db 0
-db 0x55,0xaa
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    db 0x55,0xaa
 
 
