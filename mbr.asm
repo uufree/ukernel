@@ -5,10 +5,8 @@ SECTION mbr vstart=0x7c00
     
     mov ax,cs
     mov ds,ax
+    mov ax,0xb800
     mov es,ax
-    mov ss,ax
-    mov es,ax
-    mov sp,0x7c00
 
 ;清屏
     mov ax,0x0600
@@ -17,18 +15,18 @@ SECTION mbr vstart=0x7c00
     mov dx,0x184f
     int 0x10
 
-;获取光标位置
-    mov ah,3
-    mov bh,0
-    int 0x10
-
 ;打印字符串
-    mov ax,message
-    mov bp,ax
-    mov cx,10
-    mov ax,0x1301
-    mov bx,0x0007
-    int 0x10
+    mov si,message
+    mov di,0
+    mov cx,8
+showMessage:
+    mov al,[si]
+    mov [es:di],al
+    inc di
+    mov byte [es:di],0x07
+    inc di
+    inc si
+    loop showMessage
 
     mov bx,loaderBaseAddress
     mov eax,loaderStartSection
@@ -36,7 +34,7 @@ SECTION mbr vstart=0x7c00
     call readDisk
 
     jmp loaderBaseAddress
-
+    
 readDisk:
     mov esi,eax
     mov di,cx
@@ -94,7 +92,7 @@ read:
 
     ret
 
-message db "hello,MBR!"
+message db "I'm MBR!"
 times 510-($-$$) db 0
     db 0x55,0xaa
 
