@@ -1,6 +1,7 @@
 SECTION loader vstart=0x0500
 message1 db "I'm loader!"
     
+
     mov si,message1
     mov cx,11
 show:
