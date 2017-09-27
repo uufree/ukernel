@@ -1,17 +1,17 @@
-SECTION loader vstart=0x0500
-message1 db "I'm loader!"
-    
+%include "boot.asm"
+section loader vstart=loaderBaseAddress
 
-    mov si,message1
-    mov cx,11
-show:
-    mov al,[si]
-    mov [es:di],al
-    inc di
-    mov byte [es:di],0x07
-    inc di
-    inc si
-    loop show
+    mov byte [gs:0x10],'L'
+    mov byte [gs:0x11],0x07
+    mov byte [gs:0x12],'o'
+    mov byte [gs:0x13],007
+    mov byte [gs:0x14],'a'
+    mov byte [gs:0x15],0x07
+    mov byte [gs:0x16],'d'
+    mov byte [gs:0x17],0x07
+    mov byte [gs:0x18],'e'
+    mov byte [gs:0x19],0x07
+    mov byte [gs:0x1a],'r'
+    mov byte [gs:0x1b],0x07
 
-jmp $
-
+    jmp $

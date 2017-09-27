@@ -7,6 +7,8 @@ section mbr vstart=0x7c00
     mov ss,ax
     mov fs,ax
     mov sp,0x7c00
+    mov ax,0xb800
+    mov gs,ax
 
 ;清屏
     mov ax,0x0600
@@ -14,22 +16,16 @@ section mbr vstart=0x7c00
     mov cx,0
     mov dx,0x184f
     int 0x10
+    
+    mov byte [gs:0x00],'M'
+    mov byte [gs:0x01],0x07
+    mov byte [gs:0x02],'B'
+    mov byte [gs:0x03],0x07
+    mov byte [gs:0x04],'R'
+    mov byte [gs:0x05],0x07
 
-;获取光标位置    
-    mov ah,3
-    mov bh,0
-    int 0x10
-
-;打印字符串
-    mov ax,message
-    mov bp,ax
-    mov cx,3
-    mov ax,0x1301
-    mov bx,0x0007
-    int 0x10
-
-    mov eax,loaderBaseAddress
-    mov ebx,loaderStartSector
+    mov eax,loaderStartSector
+    mov bx,loaderBaseAddress
     mov cx,1
     call readDisk
     
@@ -47,7 +43,8 @@ readDisk:
     mov dx,0x1f2
     mov al,cl
     out dx,al
-
+    
+    mov eax,esi
 ;往LBA写入扇区起始地址
     mov dx,0x1f3
     out dx,al
@@ -60,7 +57,6 @@ readDisk:
     shr eax,cl
     mov dx,0x1f5
     out dx,al
-
 
 ;往device寄存器写入LBA的后四位以及相应的设置
     shr eax,cl
@@ -75,12 +71,12 @@ readDisk:
     out dx,al
 
 ;观察硬件状态
-    notReady:
-        nop 
-        in al,dx
-        and al,0x88
-        cmp al,0x08
-        jnz notReady
+.notReady:
+    nop 
+    in al,dx
+    and al,0x88
+    cmp al,0x08
+    jnz .notReady
 
 ;读取数据
     mov ax,di
@@ -90,12 +86,11 @@ readDisk:
 
     mov dx,0x1f0
     
-    goOnRead:
-        in ax,dx
-        mov [ebx],ax
-        add bx,2
-        loop goOnRead
-    
+.goOnRead:
+    in ax,dx
+    mov [bx],ax
+    add bx,2
+    loop .goOnRead
     ret
 
     message db "MBR"
