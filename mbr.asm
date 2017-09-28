@@ -1,98 +1,126 @@
-%include "boot.asm"
-section mbr vstart=0x7c00
+;Ö÷Òıµ¼³ÌĞò 
+;------------------------------------------------------------
+%include "boot.inc"
+SECTION MBR vstart=0x7c00         
+   mov ax,cs      
+   mov ds,ax
+   mov es,ax
+   mov ss,ax
+   mov fs,ax
+   mov sp,0x7c00
+   mov ax,0xb800
+   mov gs,ax
 
-    mov ax,cs
-    mov ds,ax
-    mov es,ax
-    mov ss,ax
-    mov fs,ax
-    mov sp,0x7c00
-    mov ax,0xb800
-    mov gs,ax
+; ÇåÆÁ
+;ÀûÓÃ0x06ºÅ¹¦ÄÜ£¬ÉÏ¾íÈ«²¿ĞĞ£¬Ôò¿ÉÇåÆÁ¡£
+; -----------------------------------------------------------
+;INT 0x10   ¹¦ÄÜºÅ:0x06	   ¹¦ÄÜÃèÊö:ÉÏ¾í´°¿Ú
+;------------------------------------------------------
+;ÊäÈë£º
+;AH ¹¦ÄÜºÅ= 0x06
+;AL = ÉÏ¾íµÄĞĞÊı(Èç¹ûÎª0,±íÊ¾È«²¿)
+;BH = ÉÏ¾íĞĞÊôĞÔ
+;(CL,CH) = ´°¿Ú×óÉÏ½ÇµÄ(X,Y)Î»ÖÃ
+;(DL,DH) = ´°¿ÚÓÒÏÂ½ÇµÄ(X,Y)Î»ÖÃ
+;ÎŞ·µ»ØÖµ£º
+   mov     ax, 0600h
+   mov     bx, 0700h
+   mov     cx, 0                   ; ×óÉÏ½Ç: (0, 0)
+   mov     dx, 184fh		   ; ÓÒÏÂ½Ç: (80,25),
+				   ; ÒòÎªVGAÎÄ±¾Ä£Ê½ÖĞ£¬Ò»ĞĞÖ»ÄÜÈİÄÉ80¸ö×Ö·û,¹²25ĞĞ¡£
+				   ; ÏÂ±ê´Ó0¿ªÊ¼£¬ËùÒÔ0x18=24,0x4f=79
+   int     10h                     ; int 10h
 
-;æ¸…å±
-    mov ax,0x0600
-    mov bx,0x0700
-    mov cx,0
-    mov dx,0x184f
-    int 0x10
-    
-    mov byte [gs:0x00],'M'
-    mov byte [gs:0x01],0x07
-    mov byte [gs:0x02],'B'
-    mov byte [gs:0x03],0x07
-    mov byte [gs:0x04],'R'
-    mov byte [gs:0x05],0x07
+   ; Êä³ö×Ö·û´®:MBR
+   mov byte [gs:0x00],'1'
+   mov byte [gs:0x01],0xA4
 
-    mov eax,loaderStartSector
-    mov bx,loaderBaseAddress
-    mov cx,4
-    call readDisk
-    
-    jmp loaderBaseAddress
+   mov byte [gs:0x02],' '
+   mov byte [gs:0x03],0xA4
 
-;------------------------------------
-;è¯»å–ç£ç›˜çš„æ•°æ®
-;------------------------------------
+   mov byte [gs:0x04],'M'
+   mov byte [gs:0x05],0xA4	   ;A±íÊ¾ÂÌÉ«±³¾°ÉÁË¸£¬4±íÊ¾Ç°¾°É«ÎªºìÉ«
 
-readDisk:
-    mov esi,eax
-    mov di,cx
+   mov byte [gs:0x06],'B'
+   mov byte [gs:0x07],0xA4
 
-;è®¾ç½®å¾…æ“ä½œçš„æ‰‡åŒºæ•°
-    mov dx,0x1f2
-    mov al,cl
-    out dx,al
-    
-    mov eax,esi
-;å¾€LBAå†™å…¥æ‰‡åŒºèµ·å§‹åœ°å€
-    mov dx,0x1f3
-    out dx,al
+   mov byte [gs:0x08],'R'
+   mov byte [gs:0x09],0xA4
+	 
+   mov eax,LOADER_START_SECTOR	 ; ÆğÊ¼ÉÈÇølbaµØÖ·
+   mov bx,LOADER_BASE_ADDR       ; Ğ´ÈëµÄµØÖ·
+   mov cx,4			 ; ´ı¶ÁÈëµÄÉÈÇøÊı
+   call rd_disk_m_16		 ; ÒÔÏÂ¶ÁÈ¡³ÌĞòµÄÆğÊ¼²¿·Ö£¨Ò»¸öÉÈÇø£©
+  
+   jmp LOADER_BASE_ADDR
+       
+;-------------------------------------------------------------------------------
+;¹¦ÄÜ:¶ÁÈ¡Ó²ÅÌn¸öÉÈÇø
+rd_disk_m_16:	   
+;-------------------------------------------------------------------------------
+				       ; eax=LBAÉÈÇøºÅ
+				       ; ebx=½«Êı¾İĞ´ÈëµÄÄÚ´æµØÖ·
+				       ; ecx=¶ÁÈëµÄÉÈÇøÊı
+      mov esi,eax	  ;±¸·İeax
+      mov di,cx		  ;±¸·İcx
+;¶ÁĞ´Ó²ÅÌ:
+;µÚ1²½£ºÉèÖÃÒª¶ÁÈ¡µÄÉÈÇøÊı
+      mov dx,0x1f2
+      mov al,cl
+      out dx,al            ;¶ÁÈ¡µÄÉÈÇøÊı
 
-    mov cl,8
-    shr eax,cl
-    mov dx,0x1f4
-    out dx,al
+      mov eax,esi	   ;»Ö¸´ax
 
-    shr eax,cl
-    mov dx,0x1f5
-    out dx,al
+;µÚ2²½£º½«LBAµØÖ·´æÈë0x1f3 ~ 0x1f6
 
-;å¾€deviceå¯„å­˜å™¨å†™å…¥LBAçš„åå››ä½ä»¥åŠç›¸åº”çš„è®¾ç½®
-    shr eax,cl
-    and al,0x0f
-    or al,0xe0
-    mov dx,0x1f6
-    out dx,al
+      ;LBAµØÖ·7~0Î»Ğ´Èë¶Ë¿Ú0x1f3
+      mov dx,0x1f3                       
+      out dx,al                          
 
-;å¾€commandå†™å…¥å¯åŠ¨å‘½ä»¤
-    mov dx,0x1f7
-    mov al,0x20
-    out dx,al
+      ;LBAµØÖ·15~8Î»Ğ´Èë¶Ë¿Ú0x1f4
+      mov cl,8
+      shr eax,cl
+      mov dx,0x1f4
+      out dx,al
 
-;è§‚å¯Ÿç¡¬ä»¶çŠ¶æ€
-.notReady:
-    nop 
-    in al,dx
-    and al,0x88
-    cmp al,0x08
-    jnz .notReady
+      ;LBAµØÖ·23~16Î»Ğ´Èë¶Ë¿Ú0x1f5
+      shr eax,cl
+      mov dx,0x1f5
+      out dx,al
 
-;è¯»å–æ•°æ®
-    mov ax,di
-    mov dx,256
-    mul dx
-    mov cx,ax
+      shr eax,cl
+      and al,0x0f	   ;lbaµÚ24~27Î»
+      or al,0xe0	   ; ÉèÖÃ7¡«4Î»Îª1110,±íÊ¾lbaÄ£Ê½
+      mov dx,0x1f6
+      out dx,al
 
-    mov dx,0x1f0
-    
-.goOnRead:
-    in ax,dx
-    mov [bx],ax
-    add bx,2
-    loop .goOnRead
-    ret
+;µÚ3²½£ºÏò0x1f7¶Ë¿ÚĞ´Èë¶ÁÃüÁî£¬0x20 
+      mov dx,0x1f7
+      mov al,0x20                        
+      out dx,al
 
-    message db "MBR"
-    times 510-($-$$) db 0
-    db 0x55,0xaa
+;µÚ4²½£º¼ì²âÓ²ÅÌ×´Ì¬
+  .not_ready:
+      ;Í¬Ò»¶Ë¿Ú£¬Ğ´Ê±±íÊ¾Ğ´ÈëÃüÁî×Ö£¬¶ÁÊ±±íÊ¾¶ÁÈëÓ²ÅÌ×´Ì¬
+      nop
+      in al,dx
+      and al,0x88	   ;µÚ4Î»Îª1±íÊ¾Ó²ÅÌ¿ØÖÆÆ÷ÒÑ×¼±¸ºÃÊı¾İ´«Êä£¬µÚ7Î»Îª1±íÊ¾Ó²ÅÌÃ¦
+      cmp al,0x08
+      jnz .not_ready	   ;ÈôÎ´×¼±¸ºÃ£¬¼ÌĞøµÈ¡£
+
+;µÚ5²½£º´Ó0x1f0¶Ë¿Ú¶ÁÊı¾İ
+      mov ax, di
+      mov dx, 256
+      mul dx
+      mov cx, ax	   ; diÎªÒª¶ÁÈ¡µÄÉÈÇøÊı£¬Ò»¸öÉÈÇøÓĞ512×Ö½Ú£¬Ã¿´Î¶ÁÈëÒ»¸ö×Ö£¬
+			   ; ¹²Ğèdi*512/2´Î£¬ËùÒÔdi*256
+      mov dx, 0x1f0
+  .go_on_read:
+      in ax,dx
+      mov [bx],ax
+      add bx,2		  
+      loop .go_on_read
+      ret
+
+   times 510-($-$$) db 0
+   db 0x55,0xaa
