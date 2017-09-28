@@ -26,7 +26,7 @@ section mbr vstart=0x7c00
 
     mov eax,loaderStartSector
     mov bx,loaderBaseAddress
-    mov cx,1
+    mov cx,4
     call readDisk
     
     jmp loaderBaseAddress
