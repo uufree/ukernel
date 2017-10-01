@@ -87,3 +87,49 @@ p_mode_start:
    mov byte [gs:160], 'P'
 
    jmp $
+
+
+setPage:
+;将页目录表清0
+    mov ecx,4096
+    mov esi,0
+ .clearDirPage:
+    mov byte [PAGE_DIR_TABLE_POS + esi],0
+    inc esi
+    loop .clearDirPage
+
+ .createPDE
+    mov eax,PAGE_DIR_TABLE_POS
+    add eax,0x1000
+    mov ebx,eax
+    
+    or eax,PG_US_U | PG_RW_W | PG_P
+    mov [PAGE_DIR_TABLE_POS + 0x0],eax      ;设置第0个页目录项指向第一个页表
+    mov [PAGE_DIR_TABLE_POS + 0xc00],eax    ;设置第768个页目录项指向第一个页表
+
+    sub,eax,0x1000
+    mov [PAGE_DIR_TABLE_POS + 4092],eax     ;设置最后一个页目录项指向页目录项自身
+
+;创建低地址1M空间的地址映射到第一个页表中
+    mov ecx,256
+    mov esi,0
+    xor edx,edx
+    mov edx,PG_US_U | PG_RW_W | PG_P
+ .createPTE
+    mov [ebx + esi * 4],edx
+    add edx,4096
+    inc esi
+    loop .createPTE
+  
+;将页目录表的768--1022表项指向固定的页表   
+    mov eax,PAGE_DIR_TABLE_POS
+    add eax,0x2000
+    or eax,PG_US_U | PG_RW_W | PG_P
+    mov ebx,PAGE_DIR_TABLE_POS
+    mov ecx,254
+    mov esi,769
+ .createKernelPDE
+    mov [ebx + esi * 4],eax
+    inc esi
+    add,eax,0x1000
+    loop .createKernelPDE
