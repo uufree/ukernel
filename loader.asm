@@ -19,25 +19,43 @@ VIDEO_DESC: dd    0x80000007
 GDT_SIZE   equ   $ - GDT_BASE
 GDT_LIMIT   equ   GDT_SIZE -	1 
 times 60 dq 0					 
+
 SELECTOR_CODE equ (0x0001<<3) + TI_GDT + RPL0         
 SELECTOR_DATA equ (0x0002<<3) + TI_GDT + RPL0	 
 SELECTOR_VIDEO equ (0x0003<<3) + TI_GDT + RPL0	  
-
 
 gdt_ptr  dw  GDT_LIMIT 
 	     dd  GDT_BASE
 loadermsg db '2 loader in real.'
 
 loader_start:
+    mov sp,LOADER_BASE_ADDR
+    mov bp,loadermsg
+    mov cx,17
+    mov ax,0x1301
+    mov bx,0x0007
+    mov dx,0x1800
+    int 0x10
 
-   mov	 sp, LOADER_BASE_ADDR
-   mov	 bp, loadermsg           
-   mov	 cx, 17			 
-   mov	 ax, 0x1301		 
-   mov	 bx, 0x0007		 
-   mov	 dx, 0x1800		 
-   int	 0x10                    
+    mov ax,0xe801
+    int 0x15
 
+;低端15M内存
+    mov cx,0x400
+    mul cx
+    shl edx,16
+    and eax,0x0000ffff
+    or edx,eax
+    add edx,0x100000
+    mov esi,edx
+
+;16M以上
+    xor eax,eax
+    mov ax,bx
+    mov ecx,0x10000
+    mul ecx
+    add esi,eax
+    mov edx,esi
 
    ;-----------------  打开A20  ----------------
    in al,0x92
@@ -64,7 +82,8 @@ p_mode_start:
    mov esp,LOADER_STACK_TOP
    mov ax, SELECTOR_VIDEO
    mov gs, ax
-
+  
+   push edx    
    mov byte [gs:160], 'P'
 
    jmp $
