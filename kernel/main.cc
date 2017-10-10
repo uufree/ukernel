@@ -2,28 +2,26 @@
 	> File Name: main.cc
 	> Author: uuchen
 	> Mail: 1319081676@qq.com
-	> Created Time: 2017年10月05日 星期四 18时19分57秒
+	> Created Time: 2017年10月10日 星期二 18时18分41秒
  ************************************************************************/
 
-#include"print.h"
+#include"../lib/print.h"
 
 int main(int argc,char** argv)
 {
-
-    printChar('k');
-    printChar('e');
-    printChar('r');
-    printChar('n');
-    printChar('e');
-    printChar('l');
-    printChar('\n');
-    printChar('1');
-    printChar('2');
-    printChar('\b');
-    printChar('3');
-    printChar('4');
-
-    return 0;
+    put_char('k');
+    put_char('e');
+    put_char('r');
+    put_char('n');
+    put_char('e');
+    put_char('l');
+    put_char('\n');
+    put_char('1');
+    put_char('2');
+    put_char('\b');
+    put_char('3');
+   
+    while(1);
 }
 
 
