@@ -5,10 +5,23 @@
 	> Created Time: 2017年10月05日 星期四 18时19分57秒
  ************************************************************************/
 
+#include"print.h"
+
 int main(int argc,char** argv)
 {
-    while(1)
-    {};
+
+    printChar('k');
+    printChar('e');
+    printChar('r');
+    printChar('n');
+    printChar('e');
+    printChar('l');
+    printChar('\n');
+    printChar('1');
+    printChar('2');
+    printChar('\b');
+    printChar('3');
+    printChar('4');
 
     return 0;
 }
