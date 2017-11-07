@@ -3,10 +3,9 @@
 %define ZERO push 0
 
 extern printStr
+extern IDTTable
 
 section .data
-intr_str db "interrupt occur!",0xa,0
-
 global InterEntryTable
 InterEntryTable:
 
@@ -14,19 +13,35 @@ InterEntryTable:
 section .text
 intr%1Entry:
     %2
-    push intr_str
-    call printStr
-    add esp,4
+    push ds
+    push es
+    push fs
+    push gs
+    pushad
 
     mov al,0x20
     out 0xa0,al
     out 0x20,al
-    add esp,4
-    iret
+    
+    push %1
+    call [IDTTable + %1*4]
+    jmp intr_exit
 
 section .data
     dd intr%1Entry
 %endmacro
+
+section .text
+global intr_exit
+intr_exit:
+    add esp,4
+    popad
+    pop gs
+    pop fs
+    pop es
+    pop ds
+    add esp,4
+    iretd
 
 VECTOR 0x01,ZERO
 VECTOR 0x02,ZERO
