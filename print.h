@@ -10,6 +10,11 @@
 
 #include"stdint.h"
 
-void put_char(uint8_t ch);
+extern "C"
+{
+    void printChar(uint8_t ch);
+    void printStr(char* message);
+    void printInt(uint32_t number);
+}
 
 #endif

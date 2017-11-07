@@ -2,13 +2,40 @@ TI_GDT equ  0
 RPL0  equ   0
 SELECTOR_VIDEO equ (0x0003<<3) + TI_GDT + RPL0
 
+section .data
+put_int_buffer dq 0
+
 [bits 32]
 section .text
-;------------------------   put_char   -----------------------------
+
+;-------------------    printStr    ---------------------
+;功能描述：使用printChar完成printStr
+;-------------------------------------------------------
+global printStr
+printStr:
+    push ebx
+    push ecx
+    xor ecx,ecx
+    mov ebx,[esp + 12]
+.goon:
+    mov cl,[ebx]
+    cmp cl,0
+    jz .str_over
+    push ecx
+    call printChar
+    add esp,4
+    inc ebx
+    jmp .goon
+.str_over:
+    pop ecx
+    pop ebx
+    ret
+
+;------------------------   printChar   -----------------------------
 ;功能描述:把栈中的1个字符写入光标所在处
 ;-------------------------------------------------------------------   
-global put_char
-put_char:
+global printChar
+printChar:
    pushad	   ;备份32位寄存器环境
    ;需要保证gs中为正确的视频段选择子,为保险起见,每次打印时都为gs赋值
    mov ax, SELECTOR_VIDEO	       ; 不能直接把立即数送入段寄存器
@@ -121,3 +148,62 @@ put_char:
  .put_char_done: 
    popad
    ret
+
+;----------------- printInt ---------------------
+;打印栈中参数
+;------------------------------------------------
+global printInt
+printInt:
+    pushad
+    mov ebp,esp
+    mov eax,[ebp+4*9]
+    mov edx,eax
+    mov edi,7
+    mov ecx,8
+    mov ebx,put_int_buffer
+
+.Based_4Bits:
+    and edx,0x0000000f
+    cmp edx,9
+    jg .is_A2F
+    add edx,'0'
+    jmp .store
+.is_A2F:
+    sub edx,10
+    add edx,'A'
+
+.store:
+    mov [ebx+edi],dl
+    dec edi
+    shr eax,4
+    mov edx,eax
+    loop .Based_4Bits
+
+.ready_to_print:
+    inc edi
+
+.skip_prefix_0:
+    cmp edi,8
+    je .full0
+
+.go_on_skip:
+    mov cl,[put_int_buffer + edi]
+    inc edi
+    cmp cl,'0'
+    je .skip_prefix_0
+    dec edi
+    jmp .put_each_num
+
+.full0:
+    mov cl,'0'
+
+.put_each_num:
+    push ecx
+    call printChar
+    add esp,4
+    inc edi
+    mov cl,[put_int_buffer + edi]
+    cmp edi,8
+    jl .put_each_num
+    popad 
+    ret

@@ -7,22 +7,25 @@
 
 #include"print.h"
 
+extern void printChar(uint8_t ch);
+extern void printStr(char* message);
+extern void printInt(uint32_t number);
+
 int main(void)
 {
-    put_char('I');
-    put_char(' ');
-    put_char('a');
-    put_char('m');
-    put_char(' ');
-    put_char('K');
-    put_char('e');
-    put_char('r');
-    put_char('n');
-    put_char('e');
-    put_char('l');
-    put_char('!');
-    
-    while(1);
+    printChar('u');
+    printChar('u');
+    printChar('c');
+    printChar('h');
+    printChar('e');
+    printChar('n');
+    printChar('\n');
 
+    printStr((char*)"Hello,Kernel!\n");
+    
+    printInt(67);
+
+    while(1);
+    
     return 0;
 }
