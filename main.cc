@@ -6,24 +6,17 @@
  ************************************************************************/
 
 #include"print.h"
+#include"interrupt.h"
+#include"init.h"
 
-extern void printChar(uint8_t ch);
 extern void printStr(char* message);
-extern void printInt(uint32_t number);
 
 int main(void)
 {
-    printChar('u');
-    printChar('u');
-    printChar('c');
-    printChar('h');
-    printChar('e');
-    printChar('n');
-    printChar('\n');
-
     printStr((char*)"Hello,Kernel!\n");
     
-    printInt(67);
+    initAll();
+    asm volatile ("sti");
 
     while(1);
     

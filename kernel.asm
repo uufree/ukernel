@@ -7,8 +7,8 @@ extern printStr
 section .data
 intr_str db "interrupt occur!",0xa,0
 
-global intrEntryTable
-intrEntryTable:
+global InterEntryTable
+InterEntryTable:
 
 %macro VECTOR 2
 section .text
