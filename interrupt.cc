@@ -18,6 +18,17 @@ handleInter IDTTable[IDT_DESC_COUNT];
 //引用extern "C"
 extern void IDTInit();
 extern handleInter InterEntryTable[IDT_DESC_COUNT]; 
+extern InterStatus interGetStatus();
+extern InterStatus interSetStatus(enum InterStatus status);
+extern InterStatus interEnable();
+extern InterStatus interDisable();
+
+static inline uint32_t GET_FLAGS()
+{
+    uint32_t flags;
+    asm volatile ("pushfl;popl %0": "=g"(flags));
+    return flags;
+}
 
 void generalInterFunc(uint8_t vec)
 {
@@ -104,6 +115,44 @@ void IDTInit()
     uint64_t IDTOperator = ((sizeof(IDT) - 1) | (((uint64_t)(uint32_t)IDT << 16)));
     asm volatile ("lidt %0" : : "m"(IDTOperator));
     printStr((char*)"IDT Init Done!\n");
+}
+
+enum InterStatus interEnable()
+{
+    enum InterStatus oldStatus;
+    if(INTER_ON == interGetStatus())
+        oldStatus = INTER_ON;
+    else
+    {
+        oldStatus = INTER_OFF;
+        asm volatile ("sti");   //开中断
+    }
+    
+    return oldStatus;
+}
+
+enum InterStatus interDisable()
+{
+    enum InterStatus oldStatus;
+    if(INTER_OFF == interGetStatus())
+        oldStatus = INTER_OFF;
+    else
+    {
+        oldStatus = INTER_ON;
+        asm volatile ("cli");
+    }
+    return oldStatus;
+}
+
+enum InterStatus interGetStatus()
+{
+    uint32_t flags = GET_FLAGS();
+    return (flags & EFFLAGS_IF) ? INTER_ON : INTER_OFF;
+}
+
+enum InterStatus interSetStatus(enum InterStatus status)
+{
+    return status & INTER_ON ? interEnable() : interDisable();
 }
 
 

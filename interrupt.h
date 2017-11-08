@@ -15,6 +15,8 @@
 #define PIC_S_CTRL 0xa0
 #define PIC_S_DATA 0xa1
 
+#define EFFLAGS_IF 0x00000200
+
 struct InterDesc
 {
     uint16_t funcOffsetLowWord;
@@ -24,10 +26,20 @@ struct InterDesc
     uint16_t funcOffsetHighWord;
 };
 
+enum InterStatus
+{
+    INTER_OFF,
+    INTER_ON
+};
+
 extern "C"
 {
     typedef void* handleInter;
     void IDTInit();
+    enum InterStatus interGetStatus();
+    enum InterStatus interSetStatus(enum InterStatus status);
+    enum InterStatus interEnable();
+    enum InterStatus interDisable();
 }
 
 static const int IDT_DESC_COUNT = 0x21;
