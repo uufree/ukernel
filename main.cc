@@ -8,6 +8,7 @@
 #include"print.h"
 #include"interrupt.h"
 #include"init.h"
+#include"debug.h"
 
 extern void printStr(char* message);
 
@@ -16,7 +17,8 @@ int main(void)
     printStr((char*)"Hello,Kernel!\n");
     
     initAll();
-    asm volatile ("sti");
+    
+    ASSERT(1==2);
 
     while(1);
     

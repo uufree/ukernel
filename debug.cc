@@ -10,6 +10,8 @@
 #include"print.h"
 #include"interrupt.h"
 
+extern void panicSpin(char* filename,int line,const char* func,const char* condition);
+
 void panicSpin(char* filename,int line,const char* func,const char* condition)
 {
     interDisable();

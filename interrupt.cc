@@ -139,7 +139,7 @@ enum InterStatus interDisable()
     else
     {
         oldStatus = INTER_ON;
-        asm volatile ("cli");
+        asm volatile ("cli" : : : "memory");
     }
     return oldStatus;
 }

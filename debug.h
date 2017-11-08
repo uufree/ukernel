@@ -8,7 +8,10 @@
 #ifndef _DEBUG_H
 #define _DEBUG_H
 
-void panicSpin(char* filename,int line,const char* func,const char* condition);
+extern "C"
+{
+    void panicSpin(char* filename,int line,const char* func,const char* condition);
+}
 
 #define PANIC(...) panicSpin(__FILE__,__LINE__,__func__,__VA_ARGS__)
 
