@@ -8,6 +8,7 @@
 #include"init.h"
 #include"print.h"
 #include"interrupt.h"
+#include"timer.h"
 
 extern void initAll();
 
@@ -15,6 +16,7 @@ void initAll()
 {
     IDTInit();
     printStr((char*)"Init All Done!\n");
+    timerInit();
 }
 
 
