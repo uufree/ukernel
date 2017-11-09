@@ -18,22 +18,22 @@ extern uint8_t strcmp(const char* addr1,const char* addr2);
 extern char* strchr(const char* addr,uint8_t ch);
 extern char* strrchr(const char* addr,uint8_t ch);
 extern char* strstr(const char* addr,const char* src);
-extern void strcat(char* addr,const char* src);
+extern char* strcat(char* addr,const char* src);
 extern uint32_t strchrs(const char* addr,uint8_t ch);
 
 void memset(void* addr,uint8_t valus,uint32_t size)
 {
-    ASSERT(addr != nullptr);
-    uint32_t* addr_ = (uint32_t)addr;
+    ASSERT(addr != NULL);
+    uint32_t* addr_ = (uint32_t*)addr;
     while(--size)
         *addr_++ = valus; 
 }
 
 void memcpy(void* addr,const void* src,uint32_t size)
 {
-    ASSERT(addr != nullptr && src != nullptr);
-    uint32_t* addr_ = (uint32_t)addr;
-    const uint32_t* src_ = (uint32_t)src;
+    ASSERT(addr != NULL && src != NULL);
+    uint32_t* addr_ = (uint32_t*)addr;
+    const uint32_t* src_ = (uint32_t*)src;
     
     while(--size)
         *addr_++ = *src_++;
@@ -41,14 +41,14 @@ void memcpy(void* addr,const void* src,uint32_t size)
 
 uint8_t memcmp(const void* addr1,const void* addr2,uint32_t size)
 {
-    ASSERT(addr1 != nullptr && addr2 != nullptr);
-    uint32_t* addr1_ = (uint32_t)addr1;
-    uint32_t* addr2_ = (uint32_t)addr2;
+    ASSERT(addr1 != NULL && addr2 != NULL);
+    uint32_t* addr1_ = (uint32_t*)addr1;
+    uint32_t* addr2_ = (uint32_t*)addr2;
     
     while(--size)
     {
         if(*addr1_ != *addr2_)
-            return *addr1_ > *addr2_ ? 1 : -1;
+            return -1;
         
         ++addr1_;
         ++addr2_;
@@ -59,7 +59,7 @@ uint8_t memcmp(const void* addr1,const void* addr2,uint32_t size)
 
 void strcpy(char* addr,const char* src)
 {
-    ASSERT(addr != nullptr && src != nullptr);
+    ASSERT(addr != NULL && src != NULL);
     char* addr_ = addr;
     
     while((*addr_++ = *src++));
@@ -67,10 +67,95 @@ void strcpy(char* addr,const char* src)
 
 uint32_t strlen(const char* str)
 {
-    ASSERT(str != nullptr);
+    ASSERT(str != NULL);
     const char* str_ = str;
     while(*str_++);
     return (str_ - str - 1);
 }
 
+uint8_t strcmp(const char* addr1,const char* addr2)
+{
+    ASSERT(addr1 != NULL && addr2 != NULL);
+    
+    while(*addr1 == *addr2)
+    {
+        ++addr1;++addr2;
+    }
+    
+    return *addr1 == 0 ? 0 : -1; 
+}
+
+char* strchr(const char* addr,uint8_t ch)
+{
+    ASSERT(addr != NULL);
+    while(*addr != 0)
+    {
+        if(*addr == ch)
+            return (char*)addr;
+        ++addr;
+    }
+    return 0;
+}
+
+char* strrchr(const char* addr,uint8_t ch)
+{
+    ASSERT(addr != NULL);
+    const char* lastChar = addr + strlen(addr);
+    
+    while(*lastChar != *addr)
+    {
+        if(*lastChar == ch)
+            return (char*)lastChar;
+        --lastChar;
+    }
+    return 0;
+}
+
+char* strstr(const char* addr,const char* src)
+{
+    ASSERT(addr != NULL && src != NULL);
+    while(*addr != 0)
+    {
+        if(*addr == *src)
+        {
+            int srcSize = strlen(src);
+            char* addr_ = (char*)addr;
+            char* src_ = (char*)src;
+
+            for(int i=0;i<srcSize;++i)
+            {
+                if(*addr_ != *src_)
+                    goto read;
+            }
+            return (char*)addr;
+        }
+read:
+        ++addr;
+    }
+
+    return 0;
+}
+
+char* strcat(char* addr,const char* src)
+{
+    ASSERT(addr != NULL && src != NULL);
+    char* addr_ = addr;
+    while(*addr_++);
+    --addr_;
+    while((*addr_++ = *src++));
+
+    return addr;
+}
+
+uint32_t strchrs(const char* addr,uint8_t ch)
+{
+    ASSERT(addr != NULL);
+    uint32_t count = 0;
+    const char* addr_ = addr;
+    
+    while(*addr_++ == ch)
+        ++count;
+    
+    return count;
+}
 

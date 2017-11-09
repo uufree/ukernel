@@ -22,7 +22,7 @@ extern "C"
     char* strchr(const char* addr,uint8_t ch);
     char* strrchr(const char* addr,uint8_t ch);
     char* strstr(const char* addr,const char* src);
-    void strcat(char* addr,const char* src);
+    char* strcat(char* addr,const char* src);
     uint32_t strchrs(const char* addr,uint8_t ch);
 }
 
