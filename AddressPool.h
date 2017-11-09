@@ -23,7 +23,7 @@ class VirtualPool final
     private:
         Bitmap bitmap;
         uint32_t addrStart;
-        uint32_t poolSize();
+        uint32_t poolSize;
 };
 
 class PhysicalPool final
