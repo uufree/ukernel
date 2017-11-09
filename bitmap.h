@@ -10,6 +10,7 @@
 
 #include"stdint.h"
 #include"debug.h"
+#include"string.h"
 
 #define BITMAP_MASK 1
 
@@ -21,7 +22,9 @@ class Bitmap final
             bits(bits_),
             size(bits_ / 8),
             limits(limits_)
-        {};
+        {
+            memset(base,'0',size);
+        };
 
         explicit Bitmap(const Bitmap& lhs) = delete;
         Bitmap& operator=(const Bitmap& lhs) = delete;

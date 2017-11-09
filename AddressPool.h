@@ -13,12 +13,12 @@
 
 #define PG_SIZE 4096    
 #define BITMAP_BASE 0xc0009a00    
-#define K_MEMORY_BASE 0xc0100000
+#define K_VIR_MEMORY_BASE 0xc0100000
 
 class VirtualPool final
 {
     public:
-        VirtualPool();
+        VirtualPool(void* bitmapBaseAddr,uint32_t bits,uint32_t addrStart_,uint32_t poolSize_);
         
     private:
         Bitmap bitmap;
@@ -29,16 +29,16 @@ class VirtualPool final
 class PhysicalPool final
 {
     public:
-        PhysicalPool();
-
+        PhysicalPool(void* bitmapBaseAddr,uint32_t bits,uint32_t addrStart_,uint32_t poolSize_);
+    
     private:
         Bitmap bitmap;
         uint32_t addrStart;
         uint32_t poolSize;
 };
 
-static class PhysicalPool kernelPhyPool,userPhyPool;
-static class VirtualPool kernelVirPool;
+class PhysicalPool *kernelPhyPool,*userPhyPool;
+class VirtualPool* kernelVirPool;
 
 extern "C"
 {
