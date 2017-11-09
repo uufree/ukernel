@@ -8,11 +8,11 @@
 #include"string.h"
 #include"debug.h"
 
-extern void memset(void* addr,uint8_t valus,uint32_t size);
-extern void memcpy(void* addr,const void* src,uint32_t size);
+extern void* memset(void* addr,uint8_t valus,uint32_t size);
+extern void* memcpy(void* addr,const void* src,uint32_t size);
 extern uint8_t memcmp(const void* addr1,const void* addr2,uint32_t size);
     
-extern void strcpy(char* addr,const char* src);
+extern char* strcpy(char* addr,const char* src);
 extern uint32_t strlen(const char* strlen);
 extern uint8_t strcmp(const char* addr1,const char* addr2);
 extern char* strchr(const char* addr,uint8_t ch);
@@ -21,22 +21,26 @@ extern char* strstr(const char* addr,const char* src);
 extern char* strcat(char* addr,const char* src);
 extern uint32_t strchrs(const char* addr,uint8_t ch);
 
-void memset(void* addr,uint8_t valus,uint32_t size)
+void* memset(void* addr,uint8_t valus,uint32_t size)
 {
     ASSERT(addr != NULL);
-    uint32_t* addr_ = (uint32_t*)addr;
-    while(--size)
+    uint8_t* addr_ = (uint8_t*)addr;
+    while(size--)
         *addr_++ = valus; 
+
+    return addr;
 }
 
-void memcpy(void* addr,const void* src,uint32_t size)
+void* memcpy(void* addr,const void* src,uint32_t size)
 {
     ASSERT(addr != NULL && src != NULL);
-    uint32_t* addr_ = (uint32_t*)addr;
-    const uint32_t* src_ = (uint32_t*)src;
+    uint8_t* addr_ = (uint8_t*)addr;
+    const uint8_t* src_ = (uint8_t*)src;
     
-    while(--size)
+    while(size--)
         *addr_++ = *src_++;
+
+    return addr;
 }
 
 uint8_t memcmp(const void* addr1,const void* addr2,uint32_t size)
@@ -45,7 +49,7 @@ uint8_t memcmp(const void* addr1,const void* addr2,uint32_t size)
     uint32_t* addr1_ = (uint32_t*)addr1;
     uint32_t* addr2_ = (uint32_t*)addr2;
     
-    while(--size)
+    while(size--)
     {
         if(*addr1_ != *addr2_)
             return -1;
@@ -57,12 +61,14 @@ uint8_t memcmp(const void* addr1,const void* addr2,uint32_t size)
     return 0;
 }
 
-void strcpy(char* addr,const char* src)
+char* strcpy(char* addr,const char* src)
 {
     ASSERT(addr != NULL && src != NULL);
     char* addr_ = addr;
     
     while((*addr_++ = *src++));
+
+    return addr;
 }
 
 uint32_t strlen(const char* str)
