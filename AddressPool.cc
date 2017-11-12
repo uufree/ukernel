@@ -9,13 +9,13 @@
 
 namespace memory
 {
-    VirtualPool::VirtualPool(uint8_t* bitmapBaseAddr_,uint32_t bits_,uint32_t addrStart_,uint32_t poolSize_) :
+    VirtualPool::VirtualPool(void* bitmapBaseAddr_,uint32_t bits_,uint32_t addrStart_,uint32_t poolSize_) :
         bitmap(bitmapBaseAddr_,bits_),
         addrStart(addrStart_),
         poolSize(poolSize_)
     {};
 
-    PhysicalPool::PhysicalPool(uint8_t* bitmapBaseAddr_,uint32_t bits_,uint32_t addrStart_,uint32_t poolSize_) :
+    PhysicalPool::PhysicalPool(void* bitmapBaseAddr_,uint32_t bits_,uint32_t addrStart_,uint32_t poolSize_) :
         bitmap(bitmapBaseAddr_,bits_),
         addrStart(addrStart_),
         poolSize(poolSize_)

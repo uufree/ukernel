@@ -19,8 +19,8 @@ struct data
     class Bitmap final
     {
         public:
-            explicit Bitmap(uint8_t* base_,uint32_t bits_,uint32_t limits_ = 4096) :
-                base(base_),
+            explicit Bitmap(void* base_,uint32_t bits_,uint32_t limits_ = 4096) :
+                base((uint8_t*)base_),
                 bits(bits_),
                 size(bits_ / 8),
                 limits(limits_)

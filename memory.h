@@ -45,20 +45,20 @@ namespace memory
         void init();
         void printMemoryMessage();
             
-        uint32_t usedPageTableSize;
-        uint32_t usedMemory;
-        uint32_t freeMemory;
-        uint32_t freePages;
+        static uint32_t usedPageTableSize;
+        static uint32_t usedMemory;
+        static uint32_t freeMemory;
+        static uint32_t freePages;
 
-        uint32_t kernelFreePages;
-        uint32_t kernelPhyStart;
-        uint32_t kernelBitmapBaseAddr;
-        uint32_t kernelBitmapLenght;
+        static uint32_t kernelFreePages;
+        static uint32_t kernelPhyStart;
+        static uint32_t kernelBitmapBaseAddr;
+        static uint32_t kernelBitmapLenght;
 
-        uint32_t userFreePages;
-        uint32_t userPhyStart;
-        uint32_t userBitmapBaseAddr;
-        uint32_t userBitmapLenght;
+        static uint32_t userFreePages;
+        static uint32_t userPhyStart;
+        static uint32_t userBitmapBaseAddr;
+        static uint32_t userBitmapLenght;
     };
 
     class KernelMemory final
@@ -76,8 +76,8 @@ namespace memory
                 return &idx;
             };
             
-            uint32_t* getVaddrPDE();
-            {}
+            uint32_t* getVaddrPDE()
+            {return 0;}
         
         private:
             VirtualPool kernelVPool;

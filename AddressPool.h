@@ -17,7 +17,7 @@ namespace memory
     class VirtualPool final
     {
         public:
-            VirtualPool(uint8_t* bitmapBaseAddr_,uint32_t bits_,uint32_t addrStart_,uint32_t poolSize_);
+            VirtualPool(void* bitmapBaseAddr_,uint32_t bits_,uint32_t addrStart_,uint32_t poolSize_);
         
         private:
             data::Bitmap bitmap;
@@ -28,7 +28,7 @@ namespace memory
     class PhysicalPool final
     {
         public:
-            PhysicalPool(uint8_t* bitmapBaseAddr,uint32_t bits,uint32_t addrStart_,uint32_t poolSize_);
+            PhysicalPool(void* bitmapBaseAddr,uint32_t bits,uint32_t addrStart_,uint32_t poolSize_);
     
         private:
             data::Bitmap bitmap;
