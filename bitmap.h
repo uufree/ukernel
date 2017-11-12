@@ -31,7 +31,7 @@ struct data
             explicit Bitmap(const Bitmap& lhs) = delete;
             Bitmap& operator=(const Bitmap& lhs) = delete;
         
-            uint32_t scan(uint32_t count)
+            int scan(uint32_t count)
             {
                 uint32_t freeBitIndex = 0;
                 while(0xff == base[freeBitIndex] && freeBitIndex < size)

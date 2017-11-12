@@ -7,10 +7,11 @@
 
 #include"memory.h"
 #include"print.h"
+#include"debug.h"
+#include"string.h"
 
 namespace memory
 {
-
     void MemoryMessage::init()
     {
         uint32_t allMemory = (*(uint32_t*)(0xb00));
@@ -86,6 +87,54 @@ namespace memory
         kernelPPool((void*)BITMAP_BASE,mm->kernelFreePages,mm->kernelPhyStart,mm->kernelFreePages * PG_SIZE)     
     {};
 
+    void KernelMemory::makePageMap(uint32_t vaddr,uint32_t paddr)
+    {
+        uint32_t* pde = getVaddrPDE(vaddr);
+        uint32_t* pte = getVaddrPTE(vaddr);
+        
+        if(*pde & 0x00000001)
+        {
+            ASSERT(!(*pte & 0x00000001));
+            *pte = (paddr | PG_US_U | PG_RW_W | PG_P_1); 
+        }
+        else
+        {
+            uint32_t pdePaddr = kernelPPool.getPaddr();
+            *pde = (pdePaddr | PG_US_U | PG_RW_W | PG_P_1);
+            uint32_t addr = *pte & 0xfffff000;
+            memset((void*)&addr,0,PG_SIZE);   
+            ASSERT(!(pte & 0x00000001));
+            *pte = (paddr | PG_US_U | PG_RW_W | PG_P_1);
+        }
+    }
+
+    uint32_t KernelMemory::mallocPage(uint32_t count)
+    {
+        uint32_t vaddr = kernelVPool.getVaddr(count);   
+        if(vaddr == 0)
+            return 0;
+        
+        uint32_t vaddr_ = vaddr;
+        
+        uint32_t paddr;
+        while(count--)
+        {
+            paddr = kernelPPool.getPaddr();
+            if(paddr == 0)
+                return 0;
+
+            makePageMap(vaddr,paddr);
+            vaddr += PG_SIZE;
+        }
+        return vaddr_; 
+    }
+    
+    void* KernelMemory::palloc(uint32_t count)
+    {
+        static uint32_t addr = mallocPage(count);
+        return &addr;
+    }
+    
     UserMemory::UserMemory(const MemoryMessage* mm) :
         userPPool(&mm->userBitmapBaseAddr,mm->userFreePages,mm->userPhyStart,mm->userFreePages * PG_SIZE)
     {};

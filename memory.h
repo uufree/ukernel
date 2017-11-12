@@ -15,7 +15,6 @@
 
 namespace memory
 {
-    static const uint32_t PG_SIZE = 4096;
     static const uint32_t BITMAP_BASE = 0xc0009a00;
     static const uint32_t K_VIR_MEMORY_BASE = 0xc0100000;
     
@@ -69,16 +68,24 @@ namespace memory
             KernelMemory& operator=(const KernelMemory& lhs) = delete;
             ~KernelMemory(){};
             
+            void* palloc(uint32_t count); 
+
         private:
             uint32_t* getVaddrPTE(uint32_t vaddr)
             {
-                static uint32_t idx = (0xffc00000 + ((vaddr & 0xfcc00000) >> 10) + PTE_IDX(vaddr) * 4);
+                static uint32_t idx = (uint32_t)(0xffc00000 + ((vaddr & 0xfcc00000) >> 10) + PTE_IDX(vaddr) * 4);
                 return &idx;
             };
             
-            uint32_t* getVaddrPDE()
-            {return 0;}
-        
+            uint32_t* getVaddrPDE(uint32_t vaddr)
+            {
+                static uint32_t idx = (uint32_t)((0xfffff) + PDE_IDX(vaddr) * 4);
+                return &idx;
+            }
+            
+            void makePageMap(uint32_t vaddr,uint32_t paddr);
+            uint32_t mallocPage(uint32_t count);
+
         private:
             VirtualPool kernelVPool;
             PhysicalPool kernelPPool;
