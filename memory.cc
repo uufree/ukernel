@@ -82,12 +82,12 @@ namespace memory
     }
     
     KernelMemory::KernelMemory(const MemoryMessage* mm) :
-        kernelVPool((uint8_t*)mm->getKernelBitmapBaseAddr(),mm->getKernelFreePages(),K_VIR_MEMORY_BASE,mm->getKernelFreePages() * PG_SIZE),
-        kernelPPool((uint8_t*)BITMAP_BASE,mm->getKernelFreePages(),mm->getKernelPhyStart(),mm->getKernelFreePages() * PG_SIZE)     
+        kernelVPool((uint8_t*)mm->kernelBitmapBaseAddr,mm->kernelFreePages,K_VIR_MEMORY_BASE,mm->kernelFreePages * PG_SIZE),
+        kernelPPool((uint8_t*)BITMAP_BASE,mm->kernelFreePages,mm->kernelPhyStart,mm->kernelFreePages * PG_SIZE)     
     {};
 
     UserMemory::UserMemory(const MemoryMessage* mm) :
-        userPPool((uint8_t*)mm->getUserBitmapBaseAddr(),mm->getUserFreePages(),mm->getUserPhyStart(),mm->getUserFreePages() * PG_SIZE)
+        userPPool((uint8_t*)mm->userBitmapBaseAddr,mm->userFreePages,mm->userPhyStart,mm->userFreePages * PG_SIZE)
     {};
 }
 

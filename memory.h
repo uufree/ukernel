@@ -35,75 +35,36 @@ namespace memory
         PF_USER = 2
     };
 
-    class MemoryMessage final
+    struct MemoryMessage
     {
-        public:
-            MemoryMessage(){init();};
-            MemoryMessage(const MemoryMessage& mm) = delete;
-            MemoryMessage& operator=(const MemoryMessage& mm) = delete;
-            ~MemoryMessage(){};
+        MemoryMessage(){init();};
+        MemoryMessage(const MemoryMessage& mm) = delete;
+        MemoryMessage& operator=(const MemoryMessage& mm) = delete;
+        ~MemoryMessage(){};
+
+        void init();
+        void printMemoryMessage();
             
-            uint32_t getKernelFreePages() const
-            {return kernelFreePages;};
+        uint32_t usedPageTableSize;
+        uint32_t usedMemory;
+        uint32_t freeMemory;
+        uint32_t freePages;
 
-            uint32_t getKernelPhyStart() const
-            {return kernelPhyStart;};
+        uint32_t kernelFreePages;
+        uint32_t kernelPhyStart;
+        uint32_t kernelBitmapBaseAddr;
+        uint32_t kernelBitmapLenght;
 
-            uint32_t* getKernelBitmapBaseAddr()
-            {return &kernelBitmapBaseAddr;};
-
-            uint32_t getKernelBitmapLenght() const
-            {return kernelBitmapLenght;};
-
-            uint32_t getUsedPageTableSize() const
-            {return usedPageTableSize;};
-
-            uint32_t getUsedMemory() const
-            {return usedMemory;};
-
-            uint32_t getFreeMemory() const
-            {return freeMemory;};
-
-            uint32_t getFreePages() const
-            {return freePages;};
-            
-            uint32_t getUserFreePages() const 
-            {return userFreePages;};
-
-            uint32_t getUserPhyStart() const 
-            {return userPhyStart;};
-
-            uint32_t* getUserBitmapBaseAddr()
-            {return &userBitmapBaseAddr;};
-
-            uint32_t getBitmapLength() const
-            {return userBitmapLenght;};
-
-        private:
-            void init();
-            void printMemoryMessage();
-            
-        private:
-            uint32_t usedPageTableSize;
-            uint32_t usedMemory;
-            uint32_t freeMemory;
-            uint32_t freePages;
-
-            uint32_t kernelFreePages;
-            uint32_t kernelPhyStart;
-            uint32_t kernelBitmapBaseAddr;
-            uint32_t kernelBitmapLenght;
-
-            uint32_t userFreePages;
-            uint32_t userPhyStart;
-            uint32_t userBitmapBaseAddr;
-            uint32_t userBitmapLenght;
+        uint32_t userFreePages;
+        uint32_t userPhyStart;
+        uint32_t userBitmapBaseAddr;
+        uint32_t userBitmapLenght;
     };
 
     class KernelMemory final
     {
         public:
-            KernelMemory(const MemoryMessage& mm);
+            KernelMemory(const MemoryMessage* mm);
             KernelMemory(const KernelMemory& lhs) = delete;
             KernelMemory& operator=(const KernelMemory& lhs) = delete;
             ~KernelMemory(){};
@@ -111,8 +72,8 @@ namespace memory
         private:
             uint32_t* getVaddrPTE(uint32_t vaddr)
             {
-                uint32_t* idx = (uint32_t*)(0xffc00000 + ((vaddr & 0xfcc00000) >> 10) + PTE_IDX(addr) * 4);
-                return idx;
+                static uint32_t idx = (0xffc00000 + ((vaddr & 0xfcc00000) >> 10) + PTE_IDX(vaddr) * 4);
+                return &idx;
             };
             
             uint32_t* getVaddrPDE();
@@ -126,7 +87,7 @@ namespace memory
     class UserMemory final
     {
         public:
-            UserMemory(const MemoryMessage& mm);
+            UserMemory(const MemoryMessage* mm);
             UserMemory(const UserMemory& lhs) = delete;
             UserMemory& operator=(const UserMemory& lhs) = delete;
             ~UserMemory(){}; 
