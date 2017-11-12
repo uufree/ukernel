@@ -10,11 +10,8 @@
 
 #include"stdint.h"
 
-extern "C"
-{
-    void printChar(uint8_t ch);
-    void printStr(char* message);
-    void printInt(uint32_t number);
-}
+void printChar(uint8_t ch);
+void printStr(char* message);
+void printInt(uint32_t number);
 
 #endif

@@ -10,8 +10,6 @@
 #include"print.h"
 #include"interrupt.h"
 
-extern void panicSpin(char* filename,int line,const char* func,const char* condition);
-
 void panicSpin(char* filename,int line,const char* func,const char* condition)
 {
     interDisable();
@@ -25,11 +23,11 @@ void panicSpin(char* filename,int line,const char* func,const char* condition)
     printChar('\n');
     
     printStr((char*)"Function: ");
-    printStr(const_cast<char*>(func));
+    printStr((char*)func);
     printChar('\n');
     
     printStr((char*)"Condition: ");
-    printStr(const_cast<char*>(condition));
+    printStr((char*)condition);
     printChar('\n');
 
     while(1);

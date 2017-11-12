@@ -16,6 +16,9 @@
 #define PIC_S_DATA 0xa1
 
 #define EFFLAGS_IF 0x00000200
+#define IDT_DESC_COUNT 0x21
+
+typedef void* handleInter;
 
 struct InterDesc
 {
@@ -32,17 +35,15 @@ enum InterStatus
     INTER_ON
 };
 
-extern "C"
-{
-    typedef void* handleInter;
-    void IDTInit();
-    enum InterStatus interGetStatus();
-    enum InterStatus interSetStatus(enum InterStatus status);
-    enum InterStatus interEnable();
-    enum InterStatus interDisable();
-}
-
-static const int IDT_DESC_COUNT = 0x21;
 extern handleInter InterEntryTable[IDT_DESC_COUNT];
+char* interName[IDT_DESC_COUNT];
+handleInter IDTTable[IDT_DESC_COUNT];
+struct InterDesc IDT[IDT_DESC_COUNT];
+
+void IDTInit();
+enum InterStatus interGetStatus();
+enum InterStatus interSetStatus(enum InterStatus status);
+enum InterStatus interEnable();
+enum InterStatus interDisable();
 
 #endif

@@ -19,9 +19,6 @@
 #define READ_WRITE_LATCH 3
 #define PIT_CONTROL_PORT 0x43
 
-extern "C"
-{
-    void timerInit();
-}
+void timerInit();
 
 #endif

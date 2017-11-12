@@ -1,5 +1,5 @@
 /*************************************************************************
-	> File Name: interrupt.cc
+	> File Name: interrupt.c
 	> Author: uuchen
 	> Mail: 1319081676@qq.com
 	> Created Time: 2017年11月07日 星期二 21时10分13秒
@@ -10,18 +10,6 @@
 #include"global.h"
 #include"interrupt.h"
 #include"print.h"
-
-static struct InterDesc IDT[IDT_DESC_COUNT];
-char* interName[IDT_DESC_COUNT];
-handleInter IDTTable[IDT_DESC_COUNT];
-
-//引用extern "C"
-extern void IDTInit();
-extern handleInter InterEntryTable[IDT_DESC_COUNT]; 
-extern InterStatus interGetStatus();
-extern InterStatus interSetStatus(enum InterStatus status);
-extern InterStatus interEnable();
-extern InterStatus interDisable();
 
 static inline uint32_t GET_FLAGS()
 {
@@ -154,12 +142,6 @@ enum InterStatus interSetStatus(enum InterStatus status)
 {
     return status & INTER_ON ? interEnable() : interDisable();
 }
-
-
-
-
-
-
 
 
 

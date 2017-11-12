@@ -8,9 +8,6 @@
 #ifndef _INIT_H
 #define _INIT_H
 
-extern "C"
-{
-    void initAll();
-}
+void initAll();
 
 #endif

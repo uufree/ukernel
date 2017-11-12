@@ -1,5 +1,5 @@
 /*************************************************************************
-	> File Name: string.cc
+	> File Name: string.c
 	> Author: uuchen
 	> Mail: 1319081676@qq.com
 	> Created Time: 2017年11月09日 星期四 01时38分18秒
@@ -7,19 +7,6 @@
 
 #include"string.h"
 #include"debug.h"
-
-extern void* memset(void* addr,uint8_t valus,uint32_t size);
-extern void* memcpy(void* addr,const void* src,uint32_t size);
-extern uint8_t memcmp(const void* addr1,const void* addr2,uint32_t size);
-    
-extern char* strcpy(char* addr,const char* src);
-extern uint32_t strlen(const char* strlen);
-extern uint8_t strcmp(const char* addr1,const char* addr2);
-extern char* strchr(const char* addr,uint8_t ch);
-extern char* strrchr(const char* addr,uint8_t ch);
-extern char* strstr(const char* addr,const char* src);
-extern char* strcat(char* addr,const char* src);
-extern uint32_t strchrs(const char* addr,uint8_t ch);
 
 void* memset(void* addr,uint8_t valus,uint32_t size)
 {

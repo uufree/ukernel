@@ -10,21 +10,10 @@
 #include"init.h"
 #include"debug.h"
 
-extern void printStr(char* message);
-
-namespace mm
-{
-    void printHello()
-    {
-        printStr((char*)"Hello World!\n");
-    }
-}
-
 int main(void)
 {
     printStr((char*)"Hello,Kernel!\n");
-    mm::printHello();
-
+    
     initAll();
     
     ASSERT(1==2);

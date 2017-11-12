@@ -13,8 +13,6 @@
 #include"print.h"
 #include"bitmap.h"
 
-namespace memory
-{
     static const uint32_t BITMAP_BASE = 0xc0009a00;
     static const uint32_t K_VIR_MEMORY_BASE = 0xc0100000;
     
@@ -102,6 +100,5 @@ namespace memory
         private:
             PhysicalPool userPPool;
     };
-}
 
 #endif
