@@ -9,7 +9,7 @@
 #include"string.h"
 #include"bitmap.h"
 
-void bitmapInit(Bitmap* map,void* base_,uint32_t length_,uint32_t limits_)
+void bitmapInit(struct Bitmap* map,void* base_,uint32_t length_,uint32_t limits_)
 {
     map->base = (uint8_t*)base_; 
     map->bits = length_ * 8;
@@ -19,7 +19,25 @@ void bitmapInit(Bitmap* map,void* base_,uint32_t length_,uint32_t limits_)
     memset(base_,'\0',length_);
 }
 
-int bitmapScan(Bitmap* map,uint32_t count)
+uint8_t bitmapGetPos(struct Bitmap* map,uint32_t pos)
+{
+//    ASSERT(pos < bits);
+    return (map->base[pos >> 3] & (0x80 >> (pos & 0x07)));
+}
+
+void bitmapSetPos(struct Bitmap* map,uint32_t pos)
+{
+//    ASSERT(pos < bits);
+    map->base[pos >> 3] |= (0x80 >> (pos & 0x07));
+}
+
+void bitmapClearPos(struct Bitmap* map,uint32_t pos)
+{
+//    ASSERT(pos < bits);
+    map->base[pos >> 3] &= ~(0x80 >> (pos & 0x07)); 
+}
+
+int bitmapScan(struct Bitmap* map,uint32_t count)
 {
     uint32_t freeBitIndex = 0;
     while(0xff == map->base[freeBitIndex] && freeBitIndex < map->length)
@@ -54,23 +72,4 @@ int bitmapScan(Bitmap* map,uint32_t count)
         return bitmapIndexStart;
     return -1;
 }
-
-bool bitmapGetPos(Bitmap* map,uint32_t pos)
-{
-    ASSERT(pos < bits);
-    return (map->base[pos >> 3] & (0x80 >> (pos & 0x07)));
-}
-
-void bitmapSetPos(Bitmap* map,uint32_t pos)
-{
-    ASSERT(pos < bits);
-    map->base[pos >> 3] |= (0x80 >> (pos & 0x07));
-}
-
-void bitmapClearPos(Bitmap* map,uint32_t pos)
-{
-    ASSERT(pos < bits);
-    map->base[pos >> 3] &= ~(0x80 >> (pos & 0x07)); 
-}
-
 
