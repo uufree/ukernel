@@ -18,28 +18,28 @@ int getByte(uint8_t byte,uint8_t pos)
     switch (pos)
     {
         case 0:
-            uu = 0x01;
+            uu = 0x80;
             break;
         case 1:
-            uu = 0x02;
-            break;
-        case 2:
-            uu = 0x04;
-            break;
-        case 3:
-            uu = 0x08;
-            break;
-        case 4:
-            uu = 0x10;
-            break;
-        case 5:
-            uu = 0x20;
-            break;
-        case 6:
             uu = 0x40;
             break;
+        case 2:
+            uu = 0x20;
+            break;
+        case 3:
+            uu = 0x10;
+            break;
+        case 4:
+            uu = 0x08;
+            break;
+        case 5:
+            uu = 0x04;
+            break;
+        case 6:
+            uu = 0x02;
+            break;
         case 7:
-            uu = 0x80;
+            uu = 0x01;
             break;
     }
     
@@ -59,15 +59,27 @@ int main(int argc,char** argv)
 
     struct Bitmap map;
     bitmapInit(&map,name,8,4096);
+    
     bitmapSetPos(&map,0);
     bitmapSetPos(&map,4);
     bitmapSetPos(&map,5);
-    
+    bitmapSetPos(&map,9);
+    bitmapSetPos(&map,10);
+    bitmapSetPos(&map,16);
+    bitmapSetPos(&map,19);
+
+    int index = bitmapScan(&map,4);
+    printf("index: %d\n",index);
+
     int num;
     for(int i=0;i<8;++i)
     {
-        num = getByte(name[0],i);
-        printf("num: %d\n",num);
+        for(int j=0;j<8;++j)
+        {
+            printf("pos %d: ",i*8+j);
+            num = getByte(name[i],j);
+            printf("num: %d\n",num);
+        }
     }
     
     printf("Init After: %s\n",name);

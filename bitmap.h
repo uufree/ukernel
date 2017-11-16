@@ -10,7 +10,7 @@
 
 #include"stdint.h"
 
-#define BITMAP_MASK 1
+#define BITMAP_MASK 0x80
 
 struct Bitmap
 {
