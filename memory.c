@@ -118,9 +118,22 @@ void initUserMemory(struct UserMemory* uMemory,const MemoryMessage* mm)
     initPhysicalPool(&uMemory->userPPool,&mm->userPhyBitmapBaseAddr,mm->userBitmapLenght,mm->userPhyStart,mm->userFreePages * PG_SIZE);
 }
 
-void 
+uint32_t mallocPageInUserMemory()
+{
+    uint32_t paddr = getPoolAddr(&memory,PF_USER_PHYSICAL,1);
+    if(paddr == 0)
+        return 0;
+    return paddr;
+}
 
-static uint32_t* getVaddrPDE(uint32_t vaddr)
+void initMemory(struct Memory* memory_)
+{
+    initMemoryMessage(&memory_->memoryMeesage);
+    initKernelMemory(&memory_->kernelMemory,&memory_->memoryMeesage);
+    initUserMemory(&memory_->userMemory,&memory_->memoryMeesage);
+}
+
+uint32_t* getVaddrPDE(uint32_t vaddr)
 {
     uint32_t* idx = (uint32_t)(0xffc00000 + ((vaddr & 0xffc00000) >> 10) + PTE_IDX(vaddr) * 4);
     return idx;

@@ -63,7 +63,7 @@ struct UserMemory
 //全局变量
 struct Memory
 {
-    struct MemoryMessage;
+    struct MemoryMessage memoryMeesage;
     struct KernelMemory kernelMemory;
     struct UserMemory userMemory;
 };
@@ -78,13 +78,13 @@ uint32_t mallocPageInKernelMemory(uint32_t count);
 
 //user Memory operator
 void initUserMemory(struct UserMemory* uMemory,const MemoryMessage* memoryMeesage);
-uint32_t mallocPageInUserMemory(uint32_t count); 
+uint32_t mallocPageInUserMemory(); 
 
 //memory operator
-void initMemory(); 
+void initMemory(struct Memory* memory); 
 
 //usually operator
-static uint32_t* getVaddrPDE(uint32_t vaddr);
+uint32_t* getVaddrPDE(uint32_t vaddr);
 static uint32_t* getVaddrPTE(uint32_t vaddr);
 static void makePageMap(uint32_t vaddr,uint32_t paddr);
 
