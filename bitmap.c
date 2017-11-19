@@ -23,19 +23,19 @@ void bitmapInit(struct Bitmap* map,void* base_,uint32_t length_,uint32_t limits_
 
 uint8_t bitmapGetPos(struct Bitmap* map,uint32_t pos)
 {
-//    ASSERT(pos < bits);
+    ASSERT(pos < bits);
     return (map->base[pos >> 3] & (0x80 >> (pos & 0x07)));
 }
 
 void bitmapSetPos(struct Bitmap* map,uint32_t pos)
 {
-//    ASSERT(pos < bits);
+    ASSERT(pos < bits);
     map->base[pos >> 3] |= (0x80 >> (pos & 0x07));
 }
 
 void bitmapClearPos(struct Bitmap* map,uint32_t pos)
 {
-//    ASSERT(pos < bits);
+    ASSERT(pos < bits);
     map->base[pos >> 3] &= ~(0x80 >> (pos & 0x07)); 
 }
 
@@ -96,4 +96,3 @@ int bitmapScan(struct Bitmap* map,uint32_t count)
     
     return -1;
 }
-
