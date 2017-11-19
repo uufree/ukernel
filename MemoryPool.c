@@ -24,7 +24,7 @@ void initPhysicalPool(struct PhysicalPool* pool,void* bitmapBaseAddr_,uint32_t l
     pool->poolSize = poolSize_;
 }
 
-uint32_t getPoolAddr(enum PoolFlags flag,uint32_t count)
+uint32_t getPoolAddr(struct Memory* memory,enum PoolFlags flag,uint32_t count)
 {
     int idx = 0;
     uint32_t addr = 0;
@@ -34,21 +34,21 @@ uint32_t getPoolAddr(enum PoolFlags flag,uint32_t count)
     
     switch(flag)
     {
-        case PF_KERNEL:
-            break;
-        case PF_USER:
-            break;
-        case PF_VIRTUAL:
+        case PF_KERNEL_VIRTUAL:
             idx = bitmapScan(&virtualPool.bitmap,count);
             if(idx == -1)
                 return 0;
             addr = virtualPool.addrStart + idx * PG_SIZE;
             break;
-        case PF_PHYSICAL:
+        case PF_KERNEL_PHYSICAL:
             idx = bitmapScan(&physicalPool.bitmap,count);
             if(idx == -1)
                 return 0;
             addr = physicalPool.addrStart + idx * PG_SIZE;
+            break;
+        case PF_USER_VIRTUAL:
+            break;
+        case PF_USER_PHYSICAL:
             break;
         default:
             

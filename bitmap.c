@@ -86,7 +86,12 @@ int bitmapScan(struct Bitmap* map,uint32_t count)
             }
              
             if(count == count_)
+            {
+                for(uint32_t i=0;i<count;++i)
+                    bitmapSetPos(map,bitmapIndexStart + i);        
+
                 return bitmapIndexStart;
+            }
 
             newPos = bitmapIndexStart + count_;
             freeBitLine = newPos / 8;

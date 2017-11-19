@@ -14,10 +14,10 @@
 
 enum PoolFlags
 {
-    PF_KERNEL = 1,
-    PF_USER = 2,
-    PF_VIRTUAL = 3,
-    PF_PHYSICAL = 4
+    PF_KERNEL_VIRTUAL = 1,
+    PF_KERNEL_PHYSICAL = 2,
+    PF_USER_VIRTUAL = 3,
+    PF_USER_PHYSICAL = 4
 };
 
 static const int PG_SIZE = 4096;
@@ -40,9 +40,7 @@ struct PhysicalPool
 
 void initVirtualPool(struct VirtualPool* pool_,void* bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_);
 void initPhysicalPool(struct PhysicalPool* pool,void* bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_);
-uint32_t getPoolAddr(enum PoolFlags flag,uint32_t count);
 
-struct PhysicalPool physicalPool;
-struct VirtualPool virtualPool;
+uint32_t getPoolAddr(struct Memory* memory,enum PoolFlags flag,uint32_t count);
 
 #endif

@@ -26,6 +26,7 @@
 #define PDE_IDX(addr) ((addr & 0xffc00000) >> 22) 
 #define PTE_IDX(addr) ((addr & 0x003ff000) >> 12)
 
+//存储所有关于内存的信息
 struct MemoryMessage
 {
     static uint32_t usedPageTableSize;
@@ -35,30 +36,59 @@ struct MemoryMessage
 
     static uint32_t kernelFreePages;
     static uint32_t kernelPhyStart;
-    static uint32_t kernelBitmapBaseAddr;
+    static uint32_t kernelVirStart;
+    static uint32_t kernelPhyBitmapBaseAddr;
+    static uint32_t kernelVirBitmapBaseAddr;
     static uint32_t kernelBitmapLenght;
 
     static uint32_t userFreePages;
     static uint32_t userPhyStart;
-    static uint32_t userBitmapBaseAddr;
+    static uint32_t userPhyBitmapBaseAddr;
     static uint32_t userBitmapLenght;
 };
 
-void initMemoryMessage();
-void printMemoryMessage();
-
+//内核内存池，分配出来的是直接可供使用的内核内存
 struct KernelMemory
 {
-    VirtualPool kernelVPool;
-    PhysicalPool kernelPPool;
+    struct VirtualPool kernelVPool;
+    struct PhysicalPool kernelPPool;
 };
+
+//用户物理内存池，分配出来的仅仅只是物理内存，还需要在用户空间做映射
+struct UserMemory
+{
+    struct PhysicalPool userPPool;
+};
+
+//全局变量
+struct Memory
+{
+    struct MemoryMessage;
+    struct KernelMemory kernelMemory;
+    struct UserMemory userMemory;
+};
+
+//MemoryMessage operator
+void initMemoryMessage(struct MemoryMessage* message);
+void printMemoryMessage(struct MemoryMessage* message);
+
 //Kernel Memory operator
 void initKernelMemory(struct KernelMemory* kMemory,const MemoryMessage* memoryMeesage);
 uint32_t mallocPageInKernelMemory(uint32_t count);
+
+//user Memory operator
+void initUserMemory(struct UserMemory* uMemory,const MemoryMessage* memoryMeesage);
+uint32_t mallocPageInUserMemory(uint32_t count); 
+
+//memory operator
+void initMemory(); 
 
 //usually operator
 static uint32_t* getVaddrPDE(uint32_t vaddr);
 static uint32_t* getVaddrPTE(uint32_t vaddr);
 static void makePageMap(uint32_t vaddr,uint32_t paddr);
+
+//所有操作围绕着这一个全局变量
+struct Memory memory;
 
 #endif
