@@ -86,7 +86,7 @@ void initMemory(struct Memory* memory);
 //usually operator
 uint32_t* getVaddrPDE(uint32_t vaddr);
 static uint32_t* getVaddrPTE(uint32_t vaddr);
-static void makePageMap(uint32_t vaddr,uint32_t paddr);
+void makePageMap(uint32_t vaddr,uint32_t paddr);
 
 //所有操作围绕着这一个全局变量
 struct Memory memory;

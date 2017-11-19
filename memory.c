@@ -133,19 +133,21 @@ void initMemory(struct Memory* memory_)
     initUserMemory(&memory_->userMemory,&memory_->memoryMeesage);
 }
 
+//这两段有争议，为什么可以再函数内返回局部变量？重点标注一下
+//目的是获得一个指针，但是方式似乎有所不妥
 uint32_t* getVaddrPDE(uint32_t vaddr)
 {
-    uint32_t* idx = (uint32_t)(0xffc00000 + ((vaddr & 0xffc00000) >> 10) + PTE_IDX(vaddr) * 4);
+    uint32_t* idx = (uint32_t*)(0xffc00000 + ((vaddr & 0xffc00000) >> 10) + PTE_IDX(vaddr) * 4);
     return idx;
 }
 
-static uint32_t* getVaddrPTE(uint32_t vaddr)
+uint32_t* getVaddrPTE(uint32_t vaddr)
 {
-    uint32_t* idx = (uint32_t)((0xfffff000) + PDE_IDX(vaddr) * 4);
+    uint32_t* idx = (uint32_t*)((0xfffff000) + PDE_IDX(vaddr) * 4);
     return idx;
 }
 
-static void KernelMemory::makePageMap(uint32_t vaddr,uint32_t paddr)
+void makePageMap(uint32_t vaddr,uint32_t paddr)
 {
     uint32_t* pde = getVaddrPDE(vaddr);
     uint32_t* pte = getVaddrPTE(vaddr);
@@ -157,7 +159,7 @@ static void KernelMemory::makePageMap(uint32_t vaddr,uint32_t paddr)
     }
     else
     {
-        uint32_t pdePaddr = kernelPPool.getPaddr();
+        uint32_t pdePaddr = getPoolAddr(&memory,PF_KERNEL_PHYSICAL,1);
         *pde = (pdePaddr | PG_US_U | PG_RW_W | PG_P_1);
         uint32_t addr = *pte & 0xfffff000;
         memset((void*)&addr,0,PG_SIZE);   

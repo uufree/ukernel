@@ -9,6 +9,9 @@
 
 #include"MemoryPool.h"
 #include"debug.h"
+#include"memory.h"
+
+extern struct Memory memory;
 
 void initVirtualPool(struct VirtualPool* pool,void* bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_)
 {
@@ -24,7 +27,7 @@ void initPhysicalPool(struct PhysicalPool* pool,void* bitmapBaseAddr_,uint32_t l
     pool->poolSize = poolSize_;
 }
 
-uint32_t getPoolAddr(struct Memory* memory,enum PoolFlags flag,uint32_t count)
+uint32_t getPoolAddr(struct Memory* memory_,enum PoolFlags flag,uint32_t count)
 {
     int idx = 0;
     uint32_t addr = 0;
@@ -35,20 +38,24 @@ uint32_t getPoolAddr(struct Memory* memory,enum PoolFlags flag,uint32_t count)
     switch(flag)
     {
         case PF_KERNEL_VIRTUAL:
-            idx = bitmapScan(&virtualPool.bitmap,count);
+            idx = bitmapScan(&memory_->kernelMemory.kernelVPool.bitmap,count);
             if(idx == -1)
                 return 0;
-            addr = virtualPool.addrStart + idx * PG_SIZE;
+            addr = memory_->memoryMeesage.kernelVirStart + idx * PG_SIZE;
             break;
         case PF_KERNEL_PHYSICAL:
-            idx = bitmapScan(&physicalPool.bitmap,count);
+            idx = bitmapScan(&memory_->kernelMemory.kernelPPool.bitmap,count);
             if(idx == -1)
                 return 0;
-            addr = physicalPool.addrStart + idx * PG_SIZE;
+            addr = memory_->memoryMeesage.kernelPhyStart + idx * PG_SIZE;
             break;
         case PF_USER_VIRTUAL:
             break;
         case PF_USER_PHYSICAL:
+            idx = bitmapScan(&memory_->userMemory.userPPool.bitmap,count);
+            if(idx == -1)
+                return 0;
+            addr = memory_->memoryMeesage.userPhyStart + idx * PG_SIZE;
             break;
         default:
             
