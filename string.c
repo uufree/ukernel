@@ -10,7 +10,7 @@
 
 void* memset(void* addr,uint8_t valus,uint32_t size)
 {
-    ASSERT(addr != NULL);
+//    ASSERT(addr != NULL);
     uint8_t* addr_ = (uint8_t*)addr;
     while(size--)
         *addr_++ = valus; 

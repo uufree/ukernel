@@ -11,8 +11,6 @@
 #include"debug.h"
 #include"memory.h"
 
-extern struct Memory memory;
-
 void initVirtualPool(struct VirtualPool* pool,void* bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_)
 {
     bitmapInit(&pool->bitmap,bitmapBaseAddr_,length_,PG_SIZE);

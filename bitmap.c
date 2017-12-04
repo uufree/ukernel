@@ -8,8 +8,7 @@
 #include"debug.h"
 #include"string.h"
 #include"bitmap.h"
-
-#include<stdio.h>
+#include"print.h"
 
 void bitmapInit(struct Bitmap* map,void* base_,uint32_t length_,uint32_t limits_)
 {

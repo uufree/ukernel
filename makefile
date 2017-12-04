@@ -9,7 +9,7 @@ ASFLAGS = -f elf
 CFLAGS = -m32 -c -Wall -fno-stack-protector
 LDFLAGS = -m elf_i386 -Ttext $(ENTRY_POINT) -e main 
 
-OBJS = ./build/main.o ./build/init.o ./build/interrupt.o ./build/print.o ./build/kernel.o ./build/debug.o ./build/timer.o
+OBJS = ./build/main.o ./build/init.o ./build/interrupt.o ./build/print.o ./build/kernel.o ./build/debug.o ./build/timer.o ./build/bitmap.o ./build/MemoryPool.o ./build/memory.o ./build/string.o
 
 kernel.bin: $(OBJS)
 	$(LD) $(LDFLAGS) -o $@ $^
@@ -35,6 +35,18 @@ kernel.bin: $(OBJS)
 ./build/kernel.o: kernel.asm
 	$(AS) $(ASFLAGS) -o $@ $^
 
+./build/bitmap.o: bitmap.c
+	$(CC) $(CFLAGS) -o $@ $^
+
+./build/MemoryPool.o: MemoryPool.c
+	$(CC) $(CFLAGS) -o $@ $^
+
+./build/memory.o: memory.c
+	$(CC) $(CFLAGS) -o $@ $^
+
+./build/string.o: string.c
+	$(CC) $(CFLAGS) -o $@ $^
+
 ###########################SET .PHONY########################
 .PHONY: all clean
 
@@ -42,4 +54,4 @@ all:
 	dd if=./kernel.bin of=../bochs/bin/ukernel.img bs=512 count=200 seek=9 conv=notrunc
 clean:
 	rm -rf ./build/*.o
-	rm ukernel.bin	
+	rm kernel.bin	

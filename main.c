@@ -9,16 +9,20 @@
 #include"interrupt.h"
 #include"init.h"
 #include"debug.h"
+#include"memory.h"
 
 int main(void)
 {
     printStr((char*)"Hello,Kernel!\n");
-    
     initAll();
     
-    ASSERT(1==2);
-
-    while(1);
+    printMemoryMessage();
     
+    uint32_t* addr = mallocPageInKernelMemory(3);
+    printStr((char*)"malloc addr in kernel: ");
+    printInt(uint32_t(*addr));
+    
+    while(1);
+
     return 0;
 }

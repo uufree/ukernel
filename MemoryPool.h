@@ -12,28 +12,32 @@
 #include"bitmap.h"
 #include"stdint.h"
 
+extern struct Memory memory;
+
+//各种内存池的标志，用于在统一的函数下分配内存
 enum PoolFlags
 {
-    PF_KERNEL_VIRTUAL = 1,
-    PF_KERNEL_PHYSICAL = 2,
-    PF_USER_VIRTUAL = 3,
-    PF_USER_PHYSICAL = 4
+    PF_KERNEL_VIRTUAL,
+    PF_KERNEL_PHYSICAL,
+    PF_USER_VIRTUAL,
+    PF_USER_PHYSICAL
 };
 
+//页大小
 static const int PG_SIZE = 4096;
 
-//VirtualPool data and operator
+//虚拟内存池
 struct VirtualPool
 {
-    Bitmap bitmap;
+    struct Bitmap bitmap;
     uint32_t addrStart;
     uint32_t poolSize;
 };
 
-//PhysicalPool data and operator
+//物理内存池
 struct PhysicalPool
 {
-    Bitmap bitmap;
+    struct Bitmap bitmap;
     uint32_t addrStart;
     uint32_t poolSize;
 };
@@ -41,6 +45,6 @@ struct PhysicalPool
 void initVirtualPool(struct VirtualPool* pool_,void* bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_);
 void initPhysicalPool(struct PhysicalPool* pool,void* bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_);
 
-uint32_t getPoolAddr(struct Memory* memory,enum PoolFlags flag,uint32_t count);
+uint32_t getPoolAddr(struct Memory* memory_,enum PoolFlags flag,uint32_t count);
 
 #endif

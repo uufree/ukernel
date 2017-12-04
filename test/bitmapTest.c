@@ -6,8 +6,8 @@
  ************************************************************************/
 
 #include<stdio.h>
-#include"string.h"
-#include"bitmap.h"
+#include"../string.h"
+#include"../bitmap.h"
 
 int getByte(uint8_t byte,uint8_t pos)
 {

@@ -9,13 +9,14 @@
 #include"print.h"
 #include"interrupt.h"
 #include"timer.h"
-
+#include"memory.h"
 
 void initAll()
 {
     IDTInit();
     printStr((char*)"Init All Done!\n");
     timerInit();
+    initMemory();
 }
 
 
