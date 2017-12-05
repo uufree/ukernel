@@ -145,6 +145,7 @@ void initMemory()
     initKernelMemory(&memory.kernelMemory,&memory.memoryMeesage);
     initUserMemory(&memory.userMemory,&memory.memoryMeesage);
 //    printMemoryMessage(&memory.memoryMeesage);
+    printStr((char*)"Init Memory Done!\n");
 }
 
 //这两段有争议，为什么可以再函数内返回局部变量？重点标注一下
@@ -163,15 +164,13 @@ uint32_t* getVaddrPTE(uint32_t vaddr)
 }
 
 //这块又有问题了..哎，啥时候才能把bug一锅端啊？
+//memset对于新分配内存的初始化有问题
+//问题在于交给memset的地址必须为虚拟地址..
 void makePageMap(uint32_t vaddr,uint32_t paddr)
 {
     uint32_t* pde = getVaddrPDE(vaddr);
     uint32_t* pte = getVaddrPTE(vaddr);
-    
-    printStr((char*)"pde: 0x");
-    printInt(*pde);
-    printChar('\n');
-    
+
     if(*pde & 0x00000001)
     {
         ASSERT(!(*pte & 0x00000001));
@@ -181,10 +180,10 @@ void makePageMap(uint32_t vaddr,uint32_t paddr)
     {
         uint32_t pdePaddr = getPoolAddr(&memory,PF_KERNEL_PHYSICAL,1);
         *pde = (pdePaddr | PG_US_U | PG_RW_W | PG_P_1);
-        uint32_t addr = *pte & 0xfffff000;
-        memset((void*)&addr,'\0',PG_SIZE);   
-        ASSERT(!(pte & 0x00000001));
+        memset((void*)((int)pte & 0xfffff000),'a',PG_SIZE);   
+        ASSERT(!(*pte & 0x00000001));
         *pte = (paddr | PG_US_U | PG_RW_W | PG_P_1);
+        printStr((char*)"ioioo");
     }
 }
 

@@ -5,12 +5,11 @@
 	> Created Time: 2017年11月18日 星期六 12时25分20秒
  ************************************************************************/
 
-//VirtualPool operator
-
 #include"MemoryPool.h"
 #include"debug.h"
 #include"memory.h"
 #include"print.h"
+#include"string.h"
 
 void initVirtualPool(struct VirtualPool* pool,uint32_t bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_)
 {
@@ -48,6 +47,7 @@ uint32_t getPoolAddr(struct Memory* memory_,enum PoolFlags flag,uint32_t count)
             if(idx == -1)
                 return 0;
             addr = memory_->memoryMeesage.kernelPhyStart + idx * PG_SIZE;
+//            memset((void*)addr,'\0',count * PG_SIZE);
             break;
         case PF_USER_VIRTUAL:
             break;
@@ -56,6 +56,7 @@ uint32_t getPoolAddr(struct Memory* memory_,enum PoolFlags flag,uint32_t count)
             if(idx == -1)
                 return 0;
             addr = memory_->memoryMeesage.userPhyStart + idx * PG_SIZE;
+//            memset((void*)addr,'\0',count * PG_SIZE);
             break;
         default:
             
