@@ -29,6 +29,7 @@
 //存储所有关于内存的信息
 struct MemoryMessage
 {
+    uint32_t allMemory;
     uint32_t usedPageTableSize;
     uint32_t usedMemory;
     uint32_t freeMemory;
@@ -73,7 +74,7 @@ struct Memory memory;
 
 //MemoryMessage operator
 void initMemoryMessage(struct MemoryMessage* message);
-void printMemoryMessage();
+void printMemoryMessage(struct MemoryMessage* message);
 
 //Kernel Memory operator
 void initKernelMemory(struct KernelMemory* kMemory,struct MemoryMessage* memoryMeesage);

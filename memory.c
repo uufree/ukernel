@@ -12,86 +12,96 @@
 
 void initMemoryMessage(struct MemoryMessage* message)
 {
-    uint32_t allMemory = (*(uint32_t*)(0xb00));
-
     printStr((char*)"MemoryMessage Init Start!\n");
+    
+    message->allMemory = (*(uint32_t*)(0xb00));
     message->usedPageTableSize = 256 * PG_SIZE;
     message->usedMemory = message->usedPageTableSize + 0x100000;
-    message->freeMemory = allMemory - message->usedMemory;
+    message->freeMemory = message->allMemory - message->usedMemory;
     message->freePages = message->freeMemory / PG_SIZE;
 
     message->kernelFreePages = message->freePages / 4;
+    message->userFreePages = message->freePages - message->kernelFreePages;
+    
+    message->kernelBitmapLenght = message->kernelFreePages / 8;
+    message->userBitmapLenght = message->userFreePages / 8;
+    
     message->kernelPhyStart = message->usedMemory;
     message->kernelVirStart = K_VIR_MEMORY_BASE; 
+    
+    message->userPhyStart = message->usedMemory + message->kernelFreePages * PG_SIZE;
+    
+    message->userPhyBitmapBaseAddr = BITMAP_BASE + message->kernelBitmapLenght;
+    
     message->kernelPhyBitmapBaseAddr = BITMAP_BASE;
     message->kernelVirBitmapBaseAddr = BITMAP_BASE + message->userBitmapLenght + message->kernelBitmapLenght;
-    message->kernelBitmapLenght = message->kernelFreePages / 8;
     
-    message->userFreePages = message->freePages - message->kernelFreePages;
-    message->userPhyStart = message->usedMemory + message->kernelFreePages * PG_SIZE;
-    message->userPhyBitmapBaseAddr = BITMAP_BASE + message->kernelBitmapLenght;
-    message->userBitmapLenght = message->userFreePages / 8;
-
     printStr((char*)"MemoryMessage Init Done!\n");
 }
 
-void printMemoryMessage()
+void printMemoryMessage(struct MemoryMessage* message)
 {
     /**********All Memory**********/
-    printStr((char*)"UsedPageTableSize: ");
-    printInt(memory.memoryMeesage.usedPageTableSize);
+    printStr((char*)"*************All Memory****************\n");
+    printStr((char*)"AllMemory: 0x");
+    printInt(message->allMemory);
+    printChar('\n');
+    printStr((char*)"UsedPageTableSize: 0x");
+    printInt(message->usedPageTableSize);
     printChar('\n');
     printStr((char*)"UsedMemory: 0x");
-    printInt(memory.memoryMeesage.usedMemory);
+    printInt(message->usedMemory);
     printChar('\n');
     printStr((char*)"FreeMemory: 0x");
-    printInt(memory.memoryMeesage.freeMemory);
+    printInt(message->freeMemory);
     printChar('\n');
     printStr((char*)"FreePages 0x");
-    printInt(memory.memoryMeesage.freePages);
+    printInt(message->freePages);
     printChar('\n');
         
     /********Kernel Memory*************/
+    printStr((char*)"*************Kernel Memory****************\n");
     printStr((char*)"KernelFreePages: 0x");
-    printInt(memory.memoryMeesage.kernelFreePages);
+    printInt(message->kernelFreePages);
     printChar('\n');
     printStr((char*)"KernelPhyStart: 0x");
-    printInt(memory.memoryMeesage.kernelPhyStart);
+    printInt(message->kernelPhyStart);
     printChar('\n');
     printStr((char*)"KernelVirStart: 0x");
-    printInt(memory.memoryMeesage.kernelVirStart);
+    printInt(message->kernelVirStart);
     printChar('\n');
     printStr((char*)"KernelPhyBitmapBaseAddr: 0x");
-    printInt(memory.memoryMeesage.kernelPhyBitmapBaseAddr);
+    printInt(message->kernelPhyBitmapBaseAddr);
     printChar('\n');
     printStr((char*)"KernelVirBitmapBaseAddr: 0x");
-    printInt(memory.memoryMeesage.kernelVirBitmapBaseAddr);
+    printInt(message->kernelVirBitmapBaseAddr);
     printChar('\n');
     printStr((char*)"KernelBitmapLenght 0x");
-    printInt(memory.memoryMeesage.kernelBitmapLenght);
+    printInt(message->kernelBitmapLenght);
     printChar('\n');
     
     /*********User Memory***********/
+    printStr((char*)"*************User Memory****************\n");
     printStr((char*)"UserFreePages: 0x");
-    printInt(memory.memoryMeesage.userFreePages);
+    printInt(message->userFreePages);
     printChar('\n');
     printStr((char*)"UserPhyStart: 0x");
-    printInt(memory.memoryMeesage.userPhyStart);
+    printInt(message->userPhyStart);
     printChar('\n');
     printStr((char*)"UserPhyBitmapBaseAddr: 0x");
-    printInt(memory.memoryMeesage.userPhyBitmapBaseAddr);
+    printInt(message->userPhyBitmapBaseAddr);
     printChar('\n');
     printStr((char*)"UserBitmapLenght: 0x");
-    printInt(memory.memoryMeesage.userBitmapLenght);
+    printInt(message->userBitmapLenght);
     printChar('\n');
-    printChar('\n');
-    printChar('\n');
+    printStr((char*)"****************************************\n");
 }
 
 void initKernelMemory(struct KernelMemory* kMemory,struct MemoryMessage* mm)
 {
-    initVirtualPool(&kMemory->kernelVPool,&mm->kernelVirBitmapBaseAddr,mm->kernelBitmapLenght,mm->kernelVirStart,mm->kernelFreePages * PG_SIZE);
-    initPhysicalPool(&kMemory->kernelPPool,&mm->kernelPhyBitmapBaseAddr,mm->kernelBitmapLenght,mm->kernelPhyStart,mm->kernelFreePages * PG_SIZE);
+    initVirtualPool(&kMemory->kernelVPool,mm->kernelVirBitmapBaseAddr,mm->kernelBitmapLenght,mm->kernelVirStart,mm->kernelFreePages * PG_SIZE);
+     
+    initPhysicalPool(&kMemory->kernelPPool,mm->kernelPhyBitmapBaseAddr,mm->kernelBitmapLenght,mm->kernelPhyStart,mm->kernelFreePages * PG_SIZE);
 }
 
 uint32_t* mallocPageInKernelMemory(uint32_t count)
@@ -112,12 +122,13 @@ uint32_t* mallocPageInKernelMemory(uint32_t count)
         makePageMap(vaddr,paddr);
         vaddr += PG_SIZE;
     }
+    
     return (uint32_t*)vaddr_; 
 }
 
 void initUserMemory(struct UserMemory* uMemory,struct MemoryMessage* mm)
 {
-    initPhysicalPool(&uMemory->userPPool,&mm->userPhyBitmapBaseAddr,mm->userBitmapLenght,mm->userPhyStart,mm->userFreePages * PG_SIZE);
+    initPhysicalPool(&uMemory->userPPool,mm->userPhyBitmapBaseAddr,mm->userBitmapLenght,mm->userPhyStart,mm->userFreePages * PG_SIZE);
 }
 
 uint32_t* mallocPageInUserMemory()
@@ -133,6 +144,7 @@ void initMemory()
     initMemoryMessage(&memory.memoryMeesage);
     initKernelMemory(&memory.kernelMemory,&memory.memoryMeesage);
     initUserMemory(&memory.userMemory,&memory.memoryMeesage);
+//    printMemoryMessage(&memory.memoryMeesage);
 }
 
 //这两段有争议，为什么可以再函数内返回局部变量？重点标注一下
@@ -150,11 +162,16 @@ uint32_t* getVaddrPTE(uint32_t vaddr)
     return idx;
 }
 
+//这块又有问题了..哎，啥时候才能把bug一锅端啊？
 void makePageMap(uint32_t vaddr,uint32_t paddr)
 {
     uint32_t* pde = getVaddrPDE(vaddr);
     uint32_t* pte = getVaddrPTE(vaddr);
-        
+    
+    printStr((char*)"pde: 0x");
+    printInt(*pde);
+    printChar('\n');
+    
     if(*pde & 0x00000001)
     {
         ASSERT(!(*pte & 0x00000001));
@@ -165,7 +182,7 @@ void makePageMap(uint32_t vaddr,uint32_t paddr)
         uint32_t pdePaddr = getPoolAddr(&memory,PF_KERNEL_PHYSICAL,1);
         *pde = (pdePaddr | PG_US_U | PG_RW_W | PG_P_1);
         uint32_t addr = *pte & 0xfffff000;
-        memset((void*)&addr,0,PG_SIZE);   
+        memset((void*)&addr,'\0',PG_SIZE);   
         ASSERT(!(pte & 0x00000001));
         *pte = (paddr | PG_US_U | PG_RW_W | PG_P_1);
     }

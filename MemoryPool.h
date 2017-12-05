@@ -42,8 +42,8 @@ struct PhysicalPool
     uint32_t poolSize;
 };
 
-void initVirtualPool(struct VirtualPool* pool_,void* bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_);
-void initPhysicalPool(struct PhysicalPool* pool,void* bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_);
+void initVirtualPool(struct VirtualPool* pool_,uint32_t  bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_);
+void initPhysicalPool(struct PhysicalPool* pool,uint32_t  bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_);
 
 uint32_t getPoolAddr(struct Memory* memory_,enum PoolFlags flag,uint32_t count);
 

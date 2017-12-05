@@ -20,10 +20,11 @@ struct Bitmap
     uint32_t limits;
 };
 
-void bitmapInit(struct Bitmap* map,void* base_,uint32_t length_,uint32_t limits_);
+void bitmapInit(struct Bitmap* map,uint32_t base_,uint32_t length_,uint32_t limits_);
 uint8_t bitmapGetPos(struct Bitmap* map,uint32_t pos);
 void bitmapSetPos(struct Bitmap* map,uint32_t pos);
 void bitmapClearPos(struct Bitmap* map,uint32_t pos);
 int bitmapScan(struct Bitmap* map,uint32_t count);
+void printBitmapMessage(const struct Bitmap* bitmap);
 
 #endif

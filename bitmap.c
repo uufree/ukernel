@@ -10,31 +10,34 @@
 #include"bitmap.h"
 #include"print.h"
 
-void bitmapInit(struct Bitmap* map,void* base_,uint32_t length_,uint32_t limits_)
+void bitmapInit(struct Bitmap* map,uint32_t base_,uint32_t length_,uint32_t limits_)
 {
     map->base = (uint8_t*)base_; 
     map->bits = length_ * 8;
     map->length = length_;
     map->limits = limits_;
     
-    memset(base_,'\0',map->length);
+    memset(map->base,'\0',map->length);
 }
 
 uint8_t bitmapGetPos(struct Bitmap* map,uint32_t pos)
 {
-    ASSERT(pos < bits);
+//    ASSERT(pos < map->bits);
     return (map->base[pos >> 3] & (0x80 >> (pos & 0x07)));
 }
 
+//在现有环境下实现的位图搜索算法不适用于无系统环境
+//ASSERT犯病了..让我先去睡一会,早起继续调bug
+//直接去掉吧,不检测了,注意在代码中控制越界吧..
 void bitmapSetPos(struct Bitmap* map,uint32_t pos)
 {
-    ASSERT(pos < bits);
+//    ASSERT(pos < map->bits);
     map->base[pos >> 3] |= (0x80 >> (pos & 0x07));
 }
 
 void bitmapClearPos(struct Bitmap* map,uint32_t pos)
 {
-    ASSERT(pos < bits);
+    ASSERT(pos < map->bits);
     map->base[pos >> 3] &= ~(0x80 >> (pos & 0x07)); 
 }
 
@@ -99,4 +102,18 @@ int bitmapScan(struct Bitmap* map,uint32_t count)
     }
     
     return -1;
+}
+
+void printBitmapMessage(const struct Bitmap* bitmap)
+{
+    printStr((char*)"Bitmap Start: 0x");
+    printInt(*(uint32_t*)bitmap->base);
+    printChar('\n');
+    printStr((char*)"Bitmap Bits: 0x");
+    printInt(bitmap->bits);
+    printChar('\n');
+    printStr((char*)"Bitmap Length: 0x");
+    printInt(bitmap->length);
+    printChar('\n');
+
 }

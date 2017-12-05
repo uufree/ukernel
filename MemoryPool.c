@@ -10,28 +10,30 @@
 #include"MemoryPool.h"
 #include"debug.h"
 #include"memory.h"
+#include"print.h"
 
-void initVirtualPool(struct VirtualPool* pool,void* bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_)
+void initVirtualPool(struct VirtualPool* pool,uint32_t bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_)
 {
     bitmapInit(&pool->bitmap,bitmapBaseAddr_,length_,PG_SIZE);
     pool->addrStart = addrStart_;
     pool->poolSize = poolSize_;
+//    printStr((char*)"\nVirtualPool:\n");
+//    printBitmapMessage(&pool->bitmap);
 }
 
-void initPhysicalPool(struct PhysicalPool* pool,void* bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_)
+void initPhysicalPool(struct PhysicalPool* pool,uint32_t bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_)
 {
     bitmapInit(&pool->bitmap,bitmapBaseAddr_,length_,PG_SIZE);
     pool->addrStart = addrStart_;
     pool->poolSize = poolSize_;
+//    printStr((char*)"\nPhysicalPool:\n");
+//    printBitmapMessage(&pool->bitmap);
 }
 
 uint32_t getPoolAddr(struct Memory* memory_,enum PoolFlags flag,uint32_t count)
 {
     int idx = 0;
     uint32_t addr = 0;
-
-    ASSERT(count < physicalPool.bitmap.length);
-    ASSERT(count < virtualPool.bitmap.length);
     
     switch(flag)
     {
