@@ -69,7 +69,7 @@ int main(int argc,char** argv)
     
     for(int i=0;i<10;++i)
     {
-        int index = bitmapScan(&map,1);
+        int index = bitmapScan(&map,3);
         printf("Index: %d\n",index);
     }
     

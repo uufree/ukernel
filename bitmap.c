@@ -55,7 +55,10 @@ int bitmapScan(struct Bitmap* map,uint32_t count)
     while(freeBitLine < map->length)
     {
         if(0xff == map->base[freeBitLine])
+        {
+            ++freeBitLine;
             continue;
+        }
 
         if(freeBitLine == map->length)
             return -1;

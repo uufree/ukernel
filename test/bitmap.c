@@ -7,6 +7,7 @@
 
 #include"bitmap.h"
 #include<string.h>
+#include<stdio.h>
 
 void bitmapInit(struct Bitmap* map,char* base_,uint32_t length_,uint32_t limits_)
 {
@@ -48,9 +49,12 @@ int bitmapScan(struct Bitmap* map,uint32_t count)
     uint32_t newPos = 0;
     
     while(freeBitLine < map->length)
-    {
+    {   
         if(0xff == map->base[freeBitLine])
+        {
+            ++freeBitLine;
             continue;
+        }
 
         if(freeBitLine == map->length)
             return -1;

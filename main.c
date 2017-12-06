@@ -18,7 +18,7 @@ int main(void)
   
     for(int i=0;i<10;++i)
     {
-        uint32_t* addr = mallocPageInKernelMemory(1);
+        uint32_t* addr = mallocPageInKernelMemory(3);
         printStr((char*)"malloc addr in kernel: 0x");
         printInt((uint32_t)addr);
         printChar('\n');
