@@ -26,6 +26,7 @@ uint8_t bitmapGetPos(struct Bitmap* map,uint32_t pos)
     return (map->base[pos >> 3] & (0x80 >> (pos & 0x07)));
 }
 
+//12.02
 //在现有环境下实现的位图搜索算法不适用于无系统环境
 //ASSERT犯病了..让我先去睡一会,早起继续调bug
 //直接去掉吧,不检测了,注意在代码中控制越界吧..

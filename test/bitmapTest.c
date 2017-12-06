@@ -67,13 +67,11 @@ int main(int argc,char** argv)
     printf("index: %d\n",index);
 */
     
-    for(int i=0;i<3;++i)
+    for(int i=0;i<10;++i)
     {
         int index = bitmapScan(&map,1);
         printf("Index: %d\n",index);
     }
-    
-    
     
     int num;
     for(int i=0;i<8;++i)

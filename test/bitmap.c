@@ -36,9 +36,9 @@ void bitmapClearPos(struct Bitmap* map,uint32_t pos)
     map->base[pos >> 3] &= ~(0x80 >> (pos & 0x07)); 
 }
 
-
+//好吧,算法都整不明白..重新写吧..
 int bitmapScan(struct Bitmap* map,uint32_t count)
-{//反正能实现需求，注释就懒得写了..
+{
     uint32_t freeBitLine = 0;
     uint8_t freeBitIndex = 0;
     uint32_t bitmapIndexStart = 0;

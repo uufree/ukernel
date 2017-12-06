@@ -15,11 +15,25 @@ int main(void)
 {
     printStr((char*)"Hello,Kernel!\n");
     initAll();
-       
-    uint32_t* addr = mallocPageInKernelMemory(3);
-    printStr((char*)"malloc addr in kernel: 0x");
-    printInt((uint32_t)addr);
+  
+    for(int i=0;i<10;++i)
+    {
+        uint32_t* addr = mallocPageInKernelMemory(1);
+        printStr((char*)"malloc addr in kernel: 0x");
+        printInt((uint32_t)addr);
+        printChar('\n');
+    }
+/*    
+    uint32_t* addr1 = mallocPageInKernelMemory(3);
+    printStr((char*)"malloc addr1 in kernel: 0x");
+    printInt((uint32_t)addr1);
+    printChar('\n');
     
+    uint32_t* addr2 = mallocPageInKernelMemory(3);
+    printStr((char*)"malloc addr2 in kernel: 0x");
+    printInt((uint32_t)addr2);
+    printChar('\n');
+*/    
     while(1);
 
     return 0;

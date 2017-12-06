@@ -107,12 +107,13 @@ void initKernelMemory(struct KernelMemory* kMemory,struct MemoryMessage* mm)
 uint32_t* mallocPageInKernelMemory(uint32_t count)
 {
     uint32_t vaddr = getPoolAddr(&memory,PF_KERNEL_VIRTUAL,count);   
+    
     if(vaddr == 0)
         return 0;
     
     uint32_t vaddr_ = vaddr;
-        
     uint32_t paddr = 0;
+    
     while(count--)
     {
         paddr = getPoolAddr(&memory,PF_KERNEL_PHYSICAL,1);

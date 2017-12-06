@@ -30,6 +30,7 @@ void initPhysicalPool(struct PhysicalPool* pool,uint32_t bitmapBaseAddr_,uint32_
 }
 
 //2017.12.06
+//bug1
 //这块在分配内核物理地址的时候有问题..
 //貌似是位图在分配之后没有及时的标记..
 //建议重新测试下为位图的功能..
@@ -37,6 +38,10 @@ void initPhysicalPool(struct PhysicalPool* pool,uint32_t bitmapBaseAddr_,uint32_
 //其次模拟物理内存的分配，逐渐的分配三次..
 //得出结论：位图搜索算法在获取1个位置的时候，会出现不标记的现象
 //已解决..
+//
+//bug2
+//多次分配kernelPhysicalMemory,第9次分配时会出错
+//bitmapScan分配出错...
 uint32_t getPoolAddr(struct Memory* memory_,enum PoolFlags flag,uint32_t count)
 {
     int idx = 0;
@@ -51,7 +56,9 @@ uint32_t getPoolAddr(struct Memory* memory_,enum PoolFlags flag,uint32_t count)
             addr = memory_->memoryMeesage.kernelVirStart + idx * PG_SIZE;
             break;
         case PF_KERNEL_PHYSICAL:
+//            printStr((char*)"1\n");
             idx = bitmapScan(&memory_->kernelMemory.kernelPPool.bitmap,count);
+//            printStr((char*)"2\n");
             if(idx == -1)
                 return 0;
             addr = memory_->memoryMeesage.kernelPhyStart + idx * PG_SIZE;
