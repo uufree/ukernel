@@ -13,7 +13,7 @@
 #include"bitmap.h"
 #include"MemoryPool.h"
 
-#define BITMAP_BASE  0xc0009a00
+#define BITMAP_BASE  0xc009a000
 #define K_VIR_MEMORY_BASE  0xc0100000
     
 #define PG_P_1 1

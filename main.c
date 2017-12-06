@@ -15,10 +15,10 @@ int main(void)
 {
     printStr((char*)"Hello,Kernel!\n");
     initAll();
-        
+       
     uint32_t* addr = mallocPageInKernelMemory(3);
     printStr((char*)"malloc addr in kernel: 0x");
-    printInt(*addr);
+    printInt((uint32_t)addr);
     
     while(1);
 

@@ -5,12 +5,10 @@
 	> Created Time: 2017年11月12日 星期日 21时47分51秒
  ************************************************************************/
 
-#include"debug.h"
-#include"string.h"
 #include"bitmap.h"
-#include"print.h"
+#include<string.h>
 
-void bitmapInit(struct Bitmap* map,uint32_t base_,uint32_t length_,uint32_t limits_)
+void bitmapInit(struct Bitmap* map,char* base_,uint32_t length_,uint32_t limits_)
 {
     map->base = (uint8_t*)base_; 
     map->bits = length_ * 8;
@@ -22,7 +20,6 @@ void bitmapInit(struct Bitmap* map,uint32_t base_,uint32_t length_,uint32_t limi
 
 uint8_t bitmapGetPos(struct Bitmap* map,uint32_t pos)
 {
-//    ASSERT(pos < map->bits);
     return (map->base[pos >> 3] & (0x80 >> (pos & 0x07)));
 }
 
@@ -31,15 +28,14 @@ uint8_t bitmapGetPos(struct Bitmap* map,uint32_t pos)
 //直接去掉吧,不检测了,注意在代码中控制越界吧..
 void bitmapSetPos(struct Bitmap* map,uint32_t pos)
 {
-//    ASSERT(pos < map->bits);
     map->base[pos >> 3] |= (0x80 >> (pos & 0x07));
 }
 
 void bitmapClearPos(struct Bitmap* map,uint32_t pos)
 {
-    ASSERT(pos < map->bits);
     map->base[pos >> 3] &= ~(0x80 >> (pos & 0x07)); 
 }
+
 
 int bitmapScan(struct Bitmap* map,uint32_t count)
 {//反正能实现需求，注释就懒得写了..
@@ -107,15 +103,3 @@ int bitmapScan(struct Bitmap* map,uint32_t count)
     return -1;
 }
 
-void printBitmapMessage(const struct Bitmap* bitmap)
-{
-    printStr((char*)"Bitmap Start: 0x");
-    printInt(*(uint32_t*)bitmap->base);
-    printChar('\n');
-    printStr((char*)"Bitmap Bits: 0x");
-    printInt(bitmap->bits);
-    printChar('\n');
-    printStr((char*)"Bitmap Length: 0x");
-    printInt(bitmap->length);
-    printChar('\n');
-}

@@ -20,7 +20,7 @@ void initMemoryMessage(struct MemoryMessage* message)
     message->freeMemory = message->allMemory - message->usedMemory;
     message->freePages = message->freeMemory / PG_SIZE;
 
-    message->kernelFreePages = message->freePages / 4;
+    message->kernelFreePages = message->freePages / 2;
     message->userFreePages = message->freePages - message->kernelFreePages;
     
     message->kernelBitmapLenght = message->kernelFreePages / 8;
@@ -109,16 +109,17 @@ uint32_t* mallocPageInKernelMemory(uint32_t count)
     uint32_t vaddr = getPoolAddr(&memory,PF_KERNEL_VIRTUAL,count);   
     if(vaddr == 0)
         return 0;
-        
+    
     uint32_t vaddr_ = vaddr;
         
     uint32_t paddr = 0;
     while(count--)
     {
         paddr = getPoolAddr(&memory,PF_KERNEL_PHYSICAL,1);
+        
         if(paddr == 0)
             return 0;
-
+    
         makePageMap(vaddr,paddr);
         vaddr += PG_SIZE;
     }
@@ -151,39 +152,62 @@ void initMemory()
 //这两段有争议，为什么可以再函数内返回局部变量？重点标注一下
 //目的是获得一个指针，但是方式似乎有所不妥
 //两天后解答上述问题：在ubuntu16.04下会出现段错误，因为现成的系统会有段保护措施，所以会造成段访问错误
-uint32_t* getVaddrPDE(uint32_t vaddr)
+uint32_t* getVaddrPTE(uint32_t vaddr)
 {
     uint32_t* idx = (uint32_t*)(0xffc00000 + ((vaddr & 0xffc00000) >> 10) + PTE_IDX(vaddr) * 4);
     return idx;
 }
 
-uint32_t* getVaddrPTE(uint32_t vaddr)
+uint32_t* getVaddrPDE(uint32_t vaddr)
 {
     uint32_t* idx = (uint32_t*)((0xfffff000) + PDE_IDX(vaddr) * 4);
     return idx;
 }
 
+//2017.12.03
 //这块又有问题了..哎，啥时候才能把bug一锅端啊？
 //memset对于新分配内存的初始化有问题
 //问题在于交给memset的地址必须为虚拟地址..
+//我靠,BITMAP_BASE多写了一个0..折腾的三天..
+//我靠，虚拟地址转换写错的，折腾了三天..
 void makePageMap(uint32_t vaddr,uint32_t paddr)
 {
     uint32_t* pde = getVaddrPDE(vaddr);
     uint32_t* pte = getVaddrPTE(vaddr);
-
+/*    
+    printStr((char*)"vaddr: 0x");
+    printInt((uint32_t)vaddr);
+    printChar('\n');
+        
+    printStr((char*)"paddr: 0x");
+    printInt((uint32_t)paddr);
+    printChar('\n');
+    
+    printStr((char*)"pde: 0x");
+    printInt((uint32_t)pde);
+    printChar('\n');
+    
+    printStr((char*)"pte: 0x");
+    printInt((uint32_t)pte);
+    printChar('\n');
+ 
+    printStr((char*)"*pte: 0x");
+    printInt((uint32_t)*pte);
+    printChar('\n');
+*/
     if(*pde & 0x00000001)
     {
-        ASSERT(!(*pte & 0x00000001));
+//        ASSERT(!(*pte & 0x00000001));
         *pte = (paddr | PG_US_U | PG_RW_W | PG_P_1); 
     }
     else
     {
         uint32_t pdePaddr = getPoolAddr(&memory,PF_KERNEL_PHYSICAL,1);
         *pde = (pdePaddr | PG_US_U | PG_RW_W | PG_P_1);
-        memset((void*)((int)pte & 0xfffff000),'a',PG_SIZE);   
+        
+        memset((void*)((uint32_t)pte & 0xfffff000),'\0',PG_SIZE); 
         ASSERT(!(*pte & 0x00000001));
         *pte = (paddr | PG_US_U | PG_RW_W | PG_P_1);
-        printStr((char*)"ioioo");
     }
 }
 

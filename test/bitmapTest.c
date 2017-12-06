@@ -6,8 +6,7 @@
  ************************************************************************/
 
 #include<stdio.h>
-#include"../string.h"
-#include"../bitmap.h"
+#include"bitmap.h"
 
 int getByte(uint8_t byte,uint8_t pos)
 {
@@ -51,15 +50,11 @@ int getByte(uint8_t byte,uint8_t pos)
 
 int main(int argc,char** argv)
 {
-    char name[8];
-    for(int i=0;i<8;++i)
-        name[i] = 'm';
-    
-    printf("Init Before: %s\n",name);
+    char name[8] = {};
 
     struct Bitmap map;
     bitmapInit(&map,name,8,4096);
-    
+/*
     bitmapSetPos(&map,0);
     bitmapSetPos(&map,4);
     bitmapSetPos(&map,5);
@@ -70,7 +65,16 @@ int main(int argc,char** argv)
 
     int index = bitmapScan(&map,4);
     printf("index: %d\n",index);
-
+*/
+    
+    for(int i=0;i<3;++i)
+    {
+        int index = bitmapScan(&map,1);
+        printf("Index: %d\n",index);
+    }
+    
+    
+    
     int num;
     for(int i=0;i<8;++i)
     {
