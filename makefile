@@ -9,7 +9,7 @@ ASFLAGS = -f elf
 CFLAGS = -m32 -c -Wall -fno-stack-protector
 LDFLAGS = -m elf_i386 -Ttext $(ENTRY_POINT) -e main 
 
-OBJS = ./build/main.o ./build/init.o ./build/interrupt.o ./build/print.o ./build/kernel.o ./build/debug.o ./build/timer.o ./build/bitmap.o ./build/MemoryPool.o ./build/memory.o ./build/string.o
+OBJS = ./build/main.o ./build/init.o ./build/interrupt.o ./build/print.o ./build/kernel.o ./build/debug.o ./build/timer.o ./build/bitmap.o ./build/MemoryPool.o ./build/memory.o ./build/string.o ./build/thread.o 
 
 kernel.bin: $(OBJS)
 	$(LD) $(LDFLAGS) -o $@ $^
@@ -45,6 +45,9 @@ kernel.bin: $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 
 ./build/string.o: string.c
+	$(CC) $(CFLAGS) -o $@ $^
+
+./build/thread.o: thread.c
 	$(CC) $(CFLAGS) -o $@ $^
 
 ###########################SET .PHONY########################

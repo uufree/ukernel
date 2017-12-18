@@ -10,6 +10,9 @@
 #include"init.h"
 #include"debug.h"
 #include"memory.h"
+#include"thread.h"
+
+void threadA(void* arg);
 
 int main(void)
 {
@@ -23,18 +26,18 @@ int main(void)
         printInt((uint32_t)addr);
         printChar('\n');
     }
-/*    
-    uint32_t* addr1 = mallocPageInKernelMemory(3);
-    printStr((char*)"malloc addr1 in kernel: 0x");
-    printInt((uint32_t)addr1);
-    printChar('\n');
     
-    uint32_t* addr2 = mallocPageInKernelMemory(3);
-    printStr((char*)"malloc addr2 in kernel: 0x");
-    printInt((uint32_t)addr2);
-    printChar('\n');
-*/    
+    threadStart("threadA",31,threadA,"argA");     
+
     while(1);
 
     return 0;
+}
+
+void threadA(void* arg)
+{
+    char* name = arg;
+
+    while(1)
+        printStr(name);
 }

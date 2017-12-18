@@ -6,7 +6,6 @@
  ************************************************************************/
 
 #include"string.h"
-#include"debug.h"
 
 void* memset(void* addr,uint8_t valus,uint32_t size)
 {
@@ -68,7 +67,7 @@ uint32_t strlen(const char* str)
 
 uint8_t strcmp(const char* addr1,const char* addr2)
 {
-    ASSERT(addr1 != NULL && addr2 != NULL);
+//    ASSERT(addr1 != NULL && addr2 != NULL);
     
     while(*addr1 == *addr2)
     {
@@ -80,7 +79,7 @@ uint8_t strcmp(const char* addr1,const char* addr2)
 
 char* strchr(const char* addr,uint8_t ch)
 {
-    ASSERT(addr != NULL);
+//    ASSERT(addr != NULL);
     while(*addr != 0)
     {
         if(*addr == ch)
@@ -92,7 +91,7 @@ char* strchr(const char* addr,uint8_t ch)
 
 char* strrchr(const char* addr,uint8_t ch)
 {
-    ASSERT(addr != NULL);
+//    ASSERT(addr != NULL);
     const char* lastChar = addr + strlen(addr);
     
     while(*lastChar != *addr)
@@ -106,7 +105,7 @@ char* strrchr(const char* addr,uint8_t ch)
 
 char* strstr(const char* addr,const char* src)
 {
-    ASSERT(addr != NULL && src != NULL);
+//    ASSERT(addr != NULL && src != NULL);
     while(*addr != 0)
     {
         if(*addr == *src)
@@ -131,7 +130,7 @@ read:
 
 char* strcat(char* addr,const char* src)
 {
-    ASSERT(addr != NULL && src != NULL);
+//    ASSERT(addr != NULL && src != NULL);
     char* addr_ = addr;
     while(*addr_++);
     --addr_;
@@ -142,7 +141,7 @@ char* strcat(char* addr,const char* src)
 
 uint32_t strchrs(const char* addr,uint8_t ch)
 {
-    ASSERT(addr != NULL);
+//    ASSERT(addr != NULL);
     uint32_t count = 0;
     const char* addr_ = addr;
     
