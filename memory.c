@@ -175,27 +175,7 @@ void makePageMap(uint32_t vaddr,uint32_t paddr)
 {
     uint32_t* pde = getVaddrPDE(vaddr);
     uint32_t* pte = getVaddrPTE(vaddr);
-/*    
-    printStr((char*)"vaddr: 0x");
-    printInt((uint32_t)vaddr);
-    printChar('\n');
-        
-    printStr((char*)"paddr: 0x");
-    printInt((uint32_t)paddr);
-    printChar('\n');
     
-    printStr((char*)"pde: 0x");
-    printInt((uint32_t)pde);
-    printChar('\n');
-    
-    printStr((char*)"pte: 0x");
-    printInt((uint32_t)pte);
-    printChar('\n');
- 
-    printStr((char*)"*pte: 0x");
-    printInt((uint32_t)*pte);
-    printChar('\n');
-*/
     if(*pde & 0x00000001)
     {
 //        ASSERT(!(*pte & 0x00000001));

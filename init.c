@@ -14,9 +14,10 @@
 void initAll()
 {
     IDTInit();
-    printStr((char*)"Init All Done!\n");
     timerInit();
     initMemory();
+    
+    printStr((char*)"Init All Done!\n");
 }
 
 

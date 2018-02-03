@@ -10,6 +10,8 @@
 
 #include"stdint.h"
 
+//和中断相关的设置
+
 #define PIC_M_CTRL 0x20
 #define PIC_M_DATA 0x21
 #define PIC_S_CTRL 0xa0
@@ -35,7 +37,7 @@ enum InterStatus
     INTER_ON
 };
 
-extern handleInter InterEntryTable[IDT_DESC_COUNT];
+extern handleInter InterEntryTable[IDT_DESC_COUNT];//和中断相关的数组
 char* interName[IDT_DESC_COUNT];
 handleInter IDTTable[IDT_DESC_COUNT];
 struct InterDesc IDT[IDT_DESC_COUNT];

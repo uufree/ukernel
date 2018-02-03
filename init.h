@@ -8,6 +8,8 @@
 #ifndef _INIT_H
 #define _INIT_H
 
+//初始化所有的中断
+
 void initAll();
 
 #endif

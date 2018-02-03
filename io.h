@@ -8,6 +8,8 @@
 #ifndef _IO_H
 #define _IO_H
 
+//方便向端口读写数据
+
 #include"stdint.h"
 
 static inline void outb(uint16_t port,uint8_t data)

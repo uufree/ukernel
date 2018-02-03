@@ -54,7 +54,7 @@ kernel.bin: $(OBJS)
 .PHONY: all clean
 
 all:
-	dd if=./kernel.bin of=../bochs/bin/ukernel.img bs=512 count=200 seek=9 conv=notrunc
+	dd if=./kernel.bin of=../../bochs/bin/ukernel.img bs=512 count=200 seek=9 conv=notrunc
 clean:
 	rm -rf ./build/*.o
 	rm kernel.bin	

@@ -8,8 +8,9 @@
 #ifndef _LIST_H
 #define _LIST_H
 
-#include"stdint.h"
+//内核开发中通用的数据结构
 
+#include"stdint.h"
 
 struct ListNode
 {

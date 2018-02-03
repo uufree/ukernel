@@ -8,6 +8,8 @@
 #ifndef _DEBUG_H
 #define _DEBUG_H
 
+//实现assert的方式,宏中的数据全部为字符串，注意以字符串的方式解析就好喽
+
 void panicSpin(char* filename,int line,const char* func,const char* condition);
 
 #define PANIC(...) panicSpin(__FILE__,__LINE__,__func__,__VA_ARGS__)
