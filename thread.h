@@ -9,6 +9,7 @@
 #define _THREAD_H
 
 #include"stdint.h"
+#include"list.h"
 
 typedef void ThreadFunction(void*);
 
@@ -66,10 +67,16 @@ struct TaskStruct
 {
     uint32_t* kernelStack;
     enum TaskStatus status;
-    uint8_t priority;
     char name[16];
+    uint8_t priority;
+    uint8_t ticks;
+    uint32_t allTicks;
+    struct ListNode* tag;
+    struct ListNode* allTag;
+    uint32_t* pageDir;
     uint32_t stackMagic;
 };
+
 
 void createThread(struct TaskStruct* pthread,ThreadFunction func,void* funcArgs);
 void initThread(struct TaskStruct* task,char* name,int prio);
