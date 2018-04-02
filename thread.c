@@ -10,7 +10,6 @@
 #include"global.h"
 #include"memory.h"
 #include"interrupt.h"
-#include"list.h"
 
 #define PG_SIZE 4096
 

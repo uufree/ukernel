@@ -14,14 +14,14 @@
 
 struct ListNode
 {
-    struct ListNode* prev;
-    struct ListNode* next;
+    struct ListNode* _prev;
+    struct ListNode* _next;
 };
 
 struct List
 {
-    struct ListNode head;
-    struct ListNode tail;
+    struct ListNode _head;
+    struct ListNode _tail;
 };
 
 typedef bool (function)(struct ListNode* node,int args);
