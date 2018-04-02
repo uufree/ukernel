@@ -18,28 +18,25 @@ void listInit(struct List* list)
 
 void listDestory(struct List* list)
 {
-    enum InterStatus status = interGetStatus();
-    
+    interDisable();
     struct ListNode* currentNode = list->_head._next;
     while(currentNode != &list->_tail)
     {
         listRemove(currentNode);
         currentNode = currentNode->_next;
     }
-
-    interSetStatus(status);
+    interEnable();
 }
 
 void listInsertBefore(struct ListNode* currentNode,struct ListNode* node)
 {
-    enum InterStatus status = interGetStatus();
+    interDisable();
     struct ListNode* elem = currentNode->_prev;
     elem->_next = node;
     node->_prev = elem;
     node->_next = currentNode;
     currentNode->_prev = node;
-
-    interSetStatus(status);
+    interEnable();
 }
 
 void listInsertBack(struct ListNode* currentNode,struct ListNode* node)
@@ -59,10 +56,10 @@ void listPushFront(struct List* list,struct ListNode* node)
 
 void listRemove(struct ListNode* node)
 {
-    enum InterStatus status = interGetStatus();
+    interDisable();
     node->_prev->_next = node->_next;
     node->_next->_prev = node->_prev;
-    interSetStatus(status);
+    interEnable();
 }
 
 struct ListNode* listPopFront(struct List* list)

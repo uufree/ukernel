@@ -5,11 +5,7 @@
 	> Created Time: 2017年11月07日 星期二 21时10分13秒
  ************************************************************************/
 
-#include"io.h"
-#include"stdint.h"
-#include"global.h"
 #include"interrupt.h"
-#include"print.h"
 
 static inline uint32_t GET_FLAGS()
 {
@@ -18,21 +14,26 @@ static inline uint32_t GET_FLAGS()
     return flags;
 }
 
-void generalInterFunc(uint8_t vec)
+static void handleGeneralInter(uint8_t vec)
 {
     if(vec==0x27 && vec==0x2f)
         return;
 
+    printStr((char*)"\n\n******************************\n\n");
     printStr((char*)"vec: 0x");
     printInt(vec);
+    printStr(interName[vec]);
     printStr((char*)"\n");
+    printStr((char*)"\n\n******************************\n\n");
+    
+    while(1);
 }
 
 void exceptionInit()
 {
     for(int i=0;i<IDT_DESC_COUNT;++i)
     {
-        IDTTable[i] = (void*)generalInterFunc;
+        IDTTable[i] = (void*)handleGeneralInter;
         interName[i] = (char*)"unknow";
     }
     
@@ -76,7 +77,7 @@ void PICInit()
     printStr((char*)"PIC Init Done!\n");
 }
 
-static inline void makeIDTDesc(struct InterDesc* desc,uint8_t attr,handleInter function)
+static inline void makeIDTDesc(struct InterDesc* desc,uint8_t attr,HandleInter function)
 {
     desc->funcOffsetLowWord = (uint32_t)function & 0x0000FFFF;
     desc->selector = SELECTOR_K_CODE;
@@ -143,5 +144,8 @@ enum InterStatus interSetStatus(enum InterStatus status)
     return status & INTER_ON ? interEnable() : interDisable();
 }
 
-
+void registerInterHander(uint8_t vec,HandleInter func)
+{
+    IDTTable[vec] = func;
+}
 

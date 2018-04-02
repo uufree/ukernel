@@ -14,7 +14,7 @@
 #define PG_SIZE 4096
 
 struct TaskStruct* mainThread;
-struct List threadList;
+struct List readyThreadList;
 struct List allThreadList;
 static struct ListNode* threadTag;
 
@@ -68,9 +68,15 @@ struct TaskStruct* threadStart(char* name,int prio,ThreadFunction func,void* fun
     struct TaskStruct* task = (struct TaskStruct*)mallocPageInKernelMemory(1);
     initThread(task,name,prio);
     createThread(task,func,funcArgs);
-    listPushBack(threadList,&task->tag);
-    listPushBack(allThreadList,&task->allTag);
+    listPushBack(&readyThreadList,&task->tag);
+    listPushBack(&allThreadList,&task->allTag);
 
     asm volatile("movl %0,%%esp;pop %%ebp;pop %%ebx;pop %%edi;pop %%esi;ret": :"g"(task->kernelStack):"memory");
 }
 
+static void makeMainThread()
+{
+    mainThread = runingThread();
+    initThread(mainThread,"main",31);
+    listPushBack(&allThreadList,&mainThread->allTag); 
+}

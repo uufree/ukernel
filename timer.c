@@ -9,6 +9,21 @@
 #include"print.h"
 #include"io.h"
 
+uint32_t ticks;
+
+static void handleTimerInter()
+{
+    struct TaskStruct* currentThread = runingThread();
+    ASSERT(currentThread->stackMagic == 0x19970730);
+    currentThread->allTicks++;
+    ticks++;
+
+    if(currentThread->ticks)
+        currentThread->ticks--;
+    else
+        schedule();
+}
+
 static void frequencyInit(uint8_t port,uint8_t no,uint8_t rwl,uint8_t mode,uint8_t value)
 {
     outb(PIT_CONTROL_PORT,(uint8_t)(no << 6 | rwl << 4 | mode << 1));
@@ -20,6 +35,8 @@ void timerInit()
 {
     printStr((char*)"Timer Init Start!\n");
     frequencyInit(CONTRER0_PORT,COUNTER0_NO,READ_WRITE_LATCH,COUNTER_MODE,(uint8_t)COUNTER0_VALUE);
+    registerInterHander(0x20,(void*)handleTimerInter);
     printStr((char*)"Timer Init Done!\n");
 }
+
 

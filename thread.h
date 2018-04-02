@@ -71,16 +71,16 @@ struct TaskStruct
     uint8_t priority;
     uint8_t ticks;
     uint32_t allTicks;
-    struct ListNode* tag;
-    struct ListNode* allTag;
+    struct ListNode tag;
+    struct ListNode allTag;
     uint32_t* pageDir;
     uint32_t stackMagic;
 };
 
-
+struct TaskStruct* runingThread();
 void createThread(struct TaskStruct* pthread,ThreadFunction func,void* funcArgs);
 void initThread(struct TaskStruct* task,char* name,int prio);
 struct TaskStruct* threadStart(char* name,int prio,ThreadFunction func,void* funcArgs);
-
+void schedule();
 
 #endif

@@ -9,6 +9,11 @@
 #define _INTERRUPT_H
 
 #include"stdint.h"
+#include"io.h"
+#include"global.h"
+#include"print.h"
+#include"thread.h"
+#include"debug.h"
 
 //和中断相关的设置
 
@@ -20,7 +25,7 @@
 #define EFFLAGS_IF 0x00000200
 #define IDT_DESC_COUNT 0x21
 
-typedef void* handleInter;
+typedef void* HandleInter;
 
 struct InterDesc
 {
@@ -37,9 +42,9 @@ enum InterStatus
     INTER_ON
 };
 
-extern handleInter InterEntryTable[IDT_DESC_COUNT];//和中断相关的数组
+extern HandleInter InterEntryTable[IDT_DESC_COUNT];//和中断相关的数组
 char* interName[IDT_DESC_COUNT];
-handleInter IDTTable[IDT_DESC_COUNT];
+HandleInter IDTTable[IDT_DESC_COUNT];
 struct InterDesc IDT[IDT_DESC_COUNT];
 
 void IDTInit();
@@ -47,5 +52,6 @@ enum InterStatus interGetStatus();
 enum InterStatus interSetStatus(enum InterStatus status);
 enum InterStatus interEnable();
 enum InterStatus interDisable();
+void registerInterHander(uint8_t vec,HandleInter func);
 
 #endif
