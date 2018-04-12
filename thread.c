@@ -77,6 +77,6 @@ struct TaskStruct* threadStart(char* name,int prio,ThreadFunction func,void* fun
 static void makeMainThread()
 {
     mainThread = runingThread();
-    initThread(mainThread,"main",31);
+    initThread(mainThread,(char*)"main",31);
     listPushBack(&allThreadList,&mainThread->allTag); 
 }
