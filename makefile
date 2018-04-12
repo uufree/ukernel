@@ -9,7 +9,7 @@ ASFLAGS = -f elf
 CFLAGS = -m32 -c -Wall -fno-stack-protector
 LDFLAGS = -m elf_i386 -Ttext $(ENTRY_POINT) -e main 
 
-OBJS = ./build/main.o ./build/init.o ./build/interrupt.o ./build/print.o ./build/kernel.o ./build/debug.o ./build/timer.o ./build/bitmap.o ./build/MemoryPool.o ./build/memory.o ./build/string.o ./build/thread.o 
+OBJS = ./build/main.o ./build/init.o ./build/interrupt.o ./build/print.o ./build/kernel.o ./build/debug.o ./build/timer.o ./build/bitmap.o ./build/MemoryPool.o ./build/memory.o ./build/string.o ./build/thread.o ./build/switch.o ./build/list.o 
 
 kernel.bin: $(OBJS)
 	$(LD) $(LDFLAGS) -o $@ $^
@@ -23,6 +23,9 @@ kernel.bin: $(OBJS)
 ./build/interrupt.o: interrupt.c 
 	$(CC) $(CFLAGS) -o $@ $^
 
+./build/list.o: list.c 
+	$(CC) $(CFLAGS) -o $@ $^
+
 ./build/timer.o: timer.c
 	$(CC) $(CFLAGS) -o $@ $^
 
@@ -33,6 +36,9 @@ kernel.bin: $(OBJS)
 	$(AS) $(ASFLAGS) -o $@ $^
 
 ./build/kernel.o: kernel.asm
+	$(AS) $(ASFLAGS) -o $@ $^
+
+./build/switch.o: switch.asm
 	$(AS) $(ASFLAGS) -o $@ $^
 
 ./build/bitmap.o: bitmap.c

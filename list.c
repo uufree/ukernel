@@ -7,36 +7,37 @@
 
 #include"list.h"
 #include"interrupt.h"
+#include"print.h"
 
 void listInit(struct List* list)
 {
-    list->_head._prev = NULL;
+    list->_head._prev = (void*)0;
     list->_head._next = &list->_tail;
     list->_tail._prev = &list->_head;
-    list->_tail._next = NULL;
+    list->_tail._next = (void*)0;
 }
 
 void listDestory(struct List* list)
 {
-    interDisable();
+    enum InterStatus status = interDisable();
     struct ListNode* currentNode = list->_head._next;
     while(currentNode != &list->_tail)
     {
         listRemove(currentNode);
         currentNode = currentNode->_next;
     }
-    interEnable();
+    interSetStatus(status);
 }
 
 void listInsertBefore(struct ListNode* currentNode,struct ListNode* node)
 {
-    interDisable();
+    enum InterStatus status = interDisable();
     struct ListNode* elem = currentNode->_prev;
     elem->_next = node;
     node->_prev = elem;
     node->_next = currentNode;
     currentNode->_prev = node;
-    interEnable();
+    interSetStatus(status);
 }
 
 void listInsertBack(struct ListNode* currentNode,struct ListNode* node)
@@ -56,10 +57,10 @@ void listPushFront(struct List* list,struct ListNode* node)
 
 void listRemove(struct ListNode* node)
 {
-    interDisable();
+    enum InterStatus status = interDisable();
     node->_prev->_next = node->_next;
     node->_next->_prev = node->_prev;
-    interEnable();
+    interSetStatus(status);
 }
 
 struct ListNode* listPopFront(struct List* list)
@@ -90,23 +91,24 @@ uint32_t listLength(struct List* list)
     return count;
 }
 
-bool listEmpty(struct List* list)
+uint32_t listEmpty(struct List* list)
 {
-    return !(list->_head._next == &list->_tail ? true : false);
+    return !(list->_head._next == &list->_tail ? 1 : 0);
 }
 
-bool listFind(struct List* list,struct ListNode* node)
+uint32_t listFind(struct List* list,struct ListNode* node)
 {
      struct ListNode* currentNode = list->_head._next;
      while(currentNode != &list->_tail)
      {
          if(currentNode == node)
-             return true;
+             return 1;
          currentNode = currentNode->_next;
      }
-     return false;
+     return 0;
 }
 
+/*
 struct ListNode* listTraversal(struct List* list,function func,int args)
 {
     struct ListNode* currentNode = list->_head._next;
@@ -122,4 +124,4 @@ struct ListNode* listTraversal(struct List* list,function func,int args)
 
     return NULL;
 }
-
+*/

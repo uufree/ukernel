@@ -59,7 +59,7 @@ void initThread(struct TaskStruct* task,char* name,int prio)
     task->priority = prio;
     task->ticks = prio;
     task->allTicks = 0;
-    task->pageDir = NULL;
+    task->pageDir = (void*)0;
     task->stackMagic = 0x19970630;
 }
 
@@ -78,5 +78,34 @@ static void makeMainThread()
 {
     mainThread = runingThread();
     initThread(mainThread,(char*)"main",31);
-    listPushBack(&allThreadList,&mainThread->allTag); 
+
+//这个push有问题
+    listPushBack(&allThreadList,&mainThread->allTag);
 }
+
+void schedule()
+{
+    struct TaskStruct* current = runingThread();
+    if(current->status == TASK_RUNING)
+    {
+        listPushBack(&readyThreadList,&current->tag);
+        current->ticks = current->priority;
+        current->status = TASK_READY;
+    }
+    
+    threadTag = (void*)0;
+    if(!listEmpty(&readyThreadList))
+        threadTag = listPopFront(&readyThreadList);
+    struct TaskStruct* next = tagToPCB(struct TaskStruct,(uint32_t)threadTag);
+    next->status = TASK_RUNING;
+    switchTo(current,next);
+}
+
+void threadListInit()
+{
+    printStr((char*)"Thread List Init Start!\n");
+    listInit(&allThreadList);
+    listInit(&readyThreadList);
+    makeMainThread();
+    printStr((char*)"Thread List Init End!\n");
+}   

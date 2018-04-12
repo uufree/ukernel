@@ -10,13 +10,15 @@
 #include"interrupt.h"
 #include"timer.h"
 #include"memory.h"
+#include"thread.h"
 
 void initAll()
 {
     IDTInit();
     timerInit();
     initMemory();
-    
+    threadListInit();
+
     printStr((char*)"Init All Done!\n");
 }
 

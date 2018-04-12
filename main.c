@@ -13,28 +13,32 @@
 #include"thread.h"
 
 void threadA(void* arg);
+void threadB(void* arg);
 
 int main(void)
 {
     printStr((char*)"Hello,Kernel!\n");
     initAll();
   
-    for(int i=0;i<10;++i)
-    {
-        uint32_t* addr = mallocPageInKernelMemory(3);
-        printStr((char*)"malloc addr in kernel: 0x");
-        printInt((uint32_t)addr);
-        printChar('\n');
-    }
+    threadStart((char*)"threadA",31,threadA,(char*)"argA");     
+    threadStart((char*)"threadB",10,threadB,(char*)"argB");
     
-    threadStart("threadA",31,threadA,"argA");     
-
-    while(1);
+    interEnable();
+    while(1)
+        printStr((char*)"main");
 
     return 0;
 }
 
 void threadA(void* arg)
+{
+    char* name = arg;
+
+    while(1)
+        printStr(name);
+}
+
+void threadB(void* arg)
 {
     char* name = arg;
 

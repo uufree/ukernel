@@ -13,6 +13,7 @@
 
 typedef void ThreadFunction(void*);
 
+#define tagToPCB(structType,tag) ((structType*)(tag & 0xfffff000))
 #define TASK_THREAD_SIZE 4096
 
 enum TaskStatus
@@ -65,7 +66,7 @@ struct ThreadStack
 
 struct TaskStruct
 {
-    uint32_t* kernelStack;
+    uint32_t* kernelStack;  //栈顶的指针
     enum TaskStatus status;
     char name[16];
     uint8_t priority;
@@ -82,5 +83,5 @@ void createThread(struct TaskStruct* pthread,ThreadFunction func,void* funcArgs)
 void initThread(struct TaskStruct* task,char* name,int prio);
 struct TaskStruct* threadStart(char* name,int prio,ThreadFunction func,void* funcArgs);
 void schedule();
-
+void threadListInit();
 #endif
