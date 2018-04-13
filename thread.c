@@ -47,7 +47,7 @@ void createThread(struct TaskStruct* pthread,ThreadFunction func,void* funcArgs)
 
 void initThread(struct TaskStruct* task,char* name,int prio)
 {
-    memset(task,'\0',TASK_THREAD_SIZE);
+    memset(task,0,sizeof(*task));
     strcpy(task->name,name);
     
     if(task == mainThread)
@@ -55,7 +55,7 @@ void initThread(struct TaskStruct* task,char* name,int prio)
     else
         task->status = TASK_READY;
 
-    task->kernelStack = (uint32_t*)((uint32_t)task + TASK_THREAD_SIZE);
+    task->kernelStack = (uint32_t*)((uint32_t)task + PG_SIZE);
     task->priority = prio;
     task->ticks = prio;
     task->allTicks = 0;
@@ -70,8 +70,8 @@ struct TaskStruct* threadStart(char* name,int prio,ThreadFunction func,void* fun
     createThread(task,func,funcArgs);
     listPushBack(&readyThreadList,&task->tag);
     listPushBack(&allThreadList,&task->allTag);
-
-    asm volatile("movl %0,%%esp;pop %%ebp;pop %%ebx;pop %%edi;pop %%esi;ret": :"g"(task->kernelStack):"memory");
+    
+    return task;
 }
 
 static void makeMainThread()
@@ -79,7 +79,6 @@ static void makeMainThread()
     mainThread = runingThread();
     initThread(mainThread,(char*)"main",31);
 
-//这个push有问题
     listPushBack(&allThreadList,&mainThread->allTag);
 }
 
@@ -96,7 +95,7 @@ void schedule()
     threadTag = (void*)0;
     if(!listEmpty(&readyThreadList))
         threadTag = listPopFront(&readyThreadList);
-    struct TaskStruct* next = tagToPCB(struct TaskStruct,(uint32_t)threadTag);
+    struct TaskStruct* next = elem2entry(struct TaskStruct,tag,threadTag);
     next->status = TASK_RUNING;
     switchTo(current,next);
 }

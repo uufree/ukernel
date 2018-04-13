@@ -7,12 +7,35 @@
 
 #include"interrupt.h"
 
+#define PIC_M_CTRL 0x20
+#define PIC_M_DATA 0x21
+#define PIC_S_CTRL 0xa0
+#define PIC_S_DATA 0xa1
+
+#define EFLAGS_IF 0x00000200
+#define IDT_DESC_COUNT 0x21
+
 static inline uint32_t GET_FLAGS()
 {
     uint32_t flags;
     asm volatile ("pushfl;popl %0": "=g"(flags));
     return flags;
 }
+
+struct InterDesc
+{
+    uint16_t funcOffsetLowWord;
+    uint16_t selector;
+    uint8_t dcount;
+    uint8_t attribute;
+    uint16_t funcOffsetHighWord;
+};
+
+
+extern HandleInter InterEntryTable[IDT_DESC_COUNT];//和中断相关的数组
+char* interName[IDT_DESC_COUNT];
+HandleInter IDTTable[IDT_DESC_COUNT];
+static struct InterDesc IDT[IDT_DESC_COUNT];
 
 static void handleGeneralInter(uint8_t vec)
 {
@@ -59,7 +82,7 @@ void exceptionInit()
     interName[19] = (char*)"#XF SIMD Floating-Point Exception";
 }
 
-void PICInit()
+static void PICInit()
 {
     outb(PIC_M_CTRL,0x11);
     outb(PIC_M_DATA,0x20);
@@ -110,13 +133,14 @@ enum InterStatus interEnable()
 {
     enum InterStatus oldStatus;
     if(INTER_ON == interGetStatus())
+    {
         oldStatus = INTER_ON;
+    }
     else
     {
         oldStatus = INTER_OFF;
-        asm volatile ("sti");   //开中断
+        asm volatile("sti");   //开中断
     }
-    
     return oldStatus;
 }
 
@@ -136,7 +160,7 @@ enum InterStatus interDisable()
 enum InterStatus interGetStatus()
 {
     uint32_t flags = GET_FLAGS();
-    return (flags & EFFLAGS_IF) ? INTER_ON : INTER_OFF;
+    return (flags & EFLAGS_IF) ? INTER_ON : INTER_OFF;
 }
 
 enum InterStatus interSetStatus(enum InterStatus status)

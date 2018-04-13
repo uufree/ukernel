@@ -19,10 +19,11 @@ int main(void)
 {
     printStr((char*)"Hello,Kernel!\n");
     initAll();
-  
-    threadStart((char*)"threadA",31,threadA,(char*)"argA");     
-    threadStart((char*)"threadB",10,threadB,(char*)"argB");
     
+//    threadStart((char*)"threadA",32,threadA,(void*)"argA");     
+//    threadStart((char*)"threadB",10,threadB,(void*)"argB");
+    
+//什么鬼，中断打不开？？？？？？？    
     interEnable();
     while(1)
         printStr((char*)"main");

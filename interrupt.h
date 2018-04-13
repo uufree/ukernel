@@ -15,37 +15,13 @@
 #include"thread.h"
 #include"debug.h"
 
-//和中断相关的设置
-
-#define PIC_M_CTRL 0x20
-#define PIC_M_DATA 0x21
-#define PIC_S_CTRL 0xa0
-#define PIC_S_DATA 0xa1
-
-#define EFFLAGS_IF 0x00000200
-#define IDT_DESC_COUNT 0x21
-
 typedef void* HandleInter;
-
-struct InterDesc
-{
-    uint16_t funcOffsetLowWord;
-    uint16_t selector;
-    uint8_t dcount;
-    uint8_t attribute;
-    uint16_t funcOffsetHighWord;
-};
 
 enum InterStatus
 {
     INTER_OFF,
     INTER_ON
 };
-
-extern HandleInter InterEntryTable[IDT_DESC_COUNT];//和中断相关的数组
-char* interName[IDT_DESC_COUNT];
-HandleInter IDTTable[IDT_DESC_COUNT];
-struct InterDesc IDT[IDT_DESC_COUNT];
 
 void IDTInit();
 enum InterStatus interGetStatus();

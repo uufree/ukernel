@@ -15,9 +15,9 @@
 void initAll()
 {
     IDTInit();
-    timerInit();
     initMemory();
     threadListInit();
+    timerInit();
 
     printStr((char*)"Init All Done!\n");
 }

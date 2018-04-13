@@ -2,7 +2,6 @@
 %define ERROR_CODE nop
 %define ZERO push 0
 
-extern printStr
 extern IDTTable
 
 section .data
