@@ -12,8 +12,6 @@
 
 #include"stdint.h"
 
-#define BITMAP_MASK 0x80
-
 struct Bitmap
 {
     uint8_t* base;

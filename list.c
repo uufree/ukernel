@@ -7,7 +7,6 @@
 
 #include"list.h"
 #include"interrupt.h"
-#include"print.h"
 
 void listInit(struct List* list)
 {

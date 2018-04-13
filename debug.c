@@ -1,36 +1,18 @@
-/*************************************************************************
-	> File Name: debug.cc
-	> Author: uuchen
-	> Mail: 1319081676@qq.com
-	> Created Time: 2017年11月08日 星期三 22时52分23秒
- ************************************************************************/
+#include "debug.h"
+#include "print.h"
+#include "interrupt.h"
 
-#include"stdint.h"
-#include"debug.h"
-#include"print.h"
-#include"interrupt.h"
-
-void panicSpin(char* filename,int line,const char* func,const char* condition)
+/* 打印文件名,行号,函数名,条件并使程序悬停 */
+void panic_spin(char* filename,	       \
+	        int line,	       \
+		const char* func,      \
+		const char* condition) \
 {
-    interDisable();
-    printStr((char*)"\n\n\n----!!!ERROR!!!----\n\n\n");
-    printStr((char*)"Filename: ");
-    printStr(filename);
-    printChar('\n');
-    
-    printStr((char*)"Line: ");
-    printInt(line);
-    printChar('\n');
-    
-    printStr((char*)"Function: ");
-    printStr((char*)func);
-    printChar('\n');
-    
-    printStr((char*)"Condition: ");
-    printStr((char*)condition);
-    printChar('\n');
-
-    while(1);
+   interDisable();	// 因为有时候会单独调用panic_spin,所以在此处关中断。
+   printStr("\n\n\n!!!!! error !!!!!\n");
+   printStr("filename:");printStr(filename);printStr("\n");
+   printStr("line:0x");printInt(line);printStr("\n");
+   printStr("function:");printStr((char*)func);printStr("\n");
+   printStr("condition:");printStr((char*)condition);printStr("\n");
+   while(1);
 }
-
-

@@ -1,33 +1,20 @@
-/*************************************************************************
-	> File Name: interrupt.h
-	> Author: uuchen
-	> Mail: 1319081676@qq.com
-	> Created Time: 2017年11月07日 星期二 21时07分31秒
- ************************************************************************/
+#ifndef __KERNEL_INTERRUPT_H
+#define __KERNEL_INTERRUPT_H
+#include "stdint.h"
+typedef void* intr_handler;
+void idt_init(void);
 
-#ifndef _INTERRUPT_H
-#define _INTERRUPT_H
-
-#include"stdint.h"
-#include"io.h"
-#include"global.h"
-#include"print.h"
-#include"thread.h"
-#include"debug.h"
-
-typedef void* HandleInter;
-
-enum InterStatus
-{
-    INTER_OFF,
-    INTER_ON
+/* 定义中断的两种状态:
+ * INTR_OFF值为0,表示关中断,
+ * INTR_ON值为1,表示开中断 */
+enum InterStatus {		 // 中断状态
+    INTER_OFF,			 // 中断关闭
+    INTER_ON		         // 中断打开
 };
 
-void IDTInit();
-enum InterStatus interGetStatus();
-enum InterStatus interSetStatus(enum InterStatus status);
-enum InterStatus interEnable();
-enum InterStatus interDisable();
-void registerInterHander(uint8_t vec,HandleInter func);
-
+enum InterStatus interGetStatus(void);
+enum InterStatus interSetStatus (enum InterStatus);
+enum InterStatus interEnable(void);
+enum InterStatus interDisable (void);
+void register_handler(uint8_t vector_no, intr_handler function);
 #endif

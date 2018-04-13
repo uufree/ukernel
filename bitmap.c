@@ -10,6 +10,8 @@
 #include"bitmap.h"
 #include"print.h"
 
+#define BITMAP_MASK 0x80
+
 void bitmapInit(struct Bitmap* map,uint32_t base_,uint32_t length_,uint32_t limits_)
 {
     map->base = (uint8_t*)base_; 
