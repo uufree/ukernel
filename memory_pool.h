@@ -1,12 +1,12 @@
 /*************************************************************************
-	> File Name: MemoryPool.h
+	> File Name: memory_pool.h
 	> Author: uuchen
 	> Mail: 1319081676@qq.com
-	> Created Time: 2017年11月18日 星期六 12时18分08秒
+	> Created Time: 2018年06月06日 星期三 16时55分22秒
  ************************************************************************/
 
-#ifndef _MEMORYPOOL_H
-#define _MEMORYPOOL_H
+#ifndef _MEMORY_POOL_H
+#define _MEMORY_POOL_H
 
 #include"print.h"
 #include"bitmap.h"
@@ -30,21 +30,21 @@ static const int PG_SIZE = 4096;
 struct VirtualPool
 {
     struct Bitmap bitmap;
-    uint32_t addrStart;
-    uint32_t poolSize;
+    uint32_t addr_start;
+    uint32_t pool_size;
 };
 
 //物理内存池
 struct PhysicalPool
 {
     struct Bitmap bitmap;
-    uint32_t addrStart;
-    uint32_t poolSize;
+    uint32_t addr_start;
+    uint32_t pool_size;
 };
 
-void initVirtualPool(struct VirtualPool* pool_,uint32_t  bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_);
-void initPhysicalPool(struct PhysicalPool* pool,uint32_t  bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_);
+void init_virtual_pool(struct VirtualPool* pool_,uint32_t  bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_);
+void init_physical_pool(struct PhysicalPool* pool,uint32_t  bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_);
 
-uint32_t getPoolAddr(struct Memory* memory_,enum PoolFlags flag,uint32_t count);
+uint32_t get_pool_addr(struct Memory* memory_,enum PoolFlags flag,uint32_t count);
 
 #endif

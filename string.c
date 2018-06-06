@@ -1,3 +1,10 @@
+/*************************************************************************
+	> File Name: string.c
+	> Author: uuchen
+	> Mail: 1319081676@qq.com
+	> Created Time: 2018年06月06日 星期三 18时20分25秒
+ ************************************************************************/
+
 #include "string.h"
 #include "global.h"
 #include "debug.h"
@@ -111,3 +118,5 @@ uint32_t strchrs(const char* str, uint8_t ch) {
    }
    return ch_cnt;
 }
+
+

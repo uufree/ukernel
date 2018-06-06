@@ -1,5 +1,13 @@
-#ifndef __KERNEL_DEBUG_H
-#define __KERNEL_DEBUG_H
+/*************************************************************************
+	> File Name: debug.h
+	> Author: uuchen
+	> Mail: 1319081676@qq.com
+	> Created Time: 2018年06月06日 星期三 18时12分42秒
+ ************************************************************************/
+
+#ifndef _DEBUG_H
+#define _DEBUG_H
+
 void panic_spin(char* filename, int line, const char* func, const char* condition);
 
 /***************************  __VA_ARGS__  *******************************
@@ -19,4 +27,4 @@ void panic_spin(char* filename, int line, const char* func, const char* conditio
       }
 #endif /*__NDEBUG */
 
-#endif /*__KERNEL_DEBUG_H*/
+#endif

@@ -44,7 +44,7 @@ kernel.bin: $(OBJS)
 ./build/bitmap.o: bitmap.c
 	$(CC) $(CFLAGS) -o $@ $^
 
-./build/MemoryPool.o: MemoryPool.c
+./build/MemoryPool.o: memory_pool.c
 	$(CC) $(CFLAGS) -o $@ $^
 
 ./build/memory.o: memory.c

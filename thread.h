@@ -1,5 +1,13 @@
-#ifndef __THREAD_THREAD_H
-#define __THREAD_THREAD_H
+/*************************************************************************
+	> File Name: thread.h
+	> Author: uuchen
+	> Mail: 1319081676@qq.com
+	> Created Time: 2018年06月06日 星期三 18时21分01秒
+ ************************************************************************/
+
+#ifndef _THREAD_H
+#define _THREAD_H
+
 #include "stdint.h"
 #include "list.h"
 
@@ -98,4 +106,6 @@ struct task_struct* thread_start(char* name, int prio, thread_func function, voi
 struct task_struct* running_thread(void);
 void schedule(void);
 void thread_init(void);
+
+
 #endif

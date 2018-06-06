@@ -20,11 +20,11 @@ struct Bitmap
     uint32_t limits;    //一般为4096
 };
 
-void bitmapInit(struct Bitmap* map,uint32_t base_,uint32_t length_,uint32_t limits_);
-uint8_t bitmapGetPos(struct Bitmap* map,uint32_t pos);
-void bitmapSetPos(struct Bitmap* map,uint32_t pos);
-void bitmapClearPos(struct Bitmap* map,uint32_t pos);
-int bitmapScan(struct Bitmap* map,uint32_t count);
-void printBitmapMessage(const struct Bitmap* bitmap);
+void bitmap_init(struct Bitmap* map,uint32_t base_,uint32_t length_,uint32_t limits_);
+uint8_t bitmap_get_pos(struct Bitmap* map,uint32_t pos);
+void bitmap_set_pos(struct Bitmap* map,uint32_t pos);
+void bitmap_clear_pos(struct Bitmap* map,uint32_t pos);
+int bitmap_scan(struct Bitmap* map,uint32_t count);
+void print_bitmap_message(const struct Bitmap* bitmap);
 
 #endif

@@ -12,7 +12,7 @@
 
 #define BITMAP_MASK 0x80
 
-void bitmapInit(struct Bitmap* map,uint32_t base_,uint32_t length_,uint32_t limits_)
+void bitmap_init(struct Bitmap* map,uint32_t base_,uint32_t length_,uint32_t limits_)
 {
     map->base = (uint8_t*)base_; 
     map->bits = length_ * 8;
@@ -22,7 +22,7 @@ void bitmapInit(struct Bitmap* map,uint32_t base_,uint32_t length_,uint32_t limi
     memset(map->base,'\0',map->length);
 }
 
-uint8_t bitmapGetPos(struct Bitmap* map,uint32_t pos)
+uint8_t bitmap_get_pos(struct Bitmap* map,uint32_t pos)
 {
 //    ASSERT(pos < map->bits);
     return (map->base[pos >> 3] & (0x80 >> (pos & 0x07)));
@@ -32,19 +32,19 @@ uint8_t bitmapGetPos(struct Bitmap* map,uint32_t pos)
 //在现有环境下实现的位图搜索算法不适用于无系统环境
 //ASSERT犯病了..让我先去睡一会,早起继续调bug
 //直接去掉吧,不检测了,注意在代码中控制越界吧..
-void bitmapSetPos(struct Bitmap* map,uint32_t pos)
+void bitmap_set_pos(struct Bitmap* map,uint32_t pos)
 {
 //    ASSERT(pos < map->bits);
     map->base[pos >> 3] |= (0x80 >> (pos & 0x07));
 }
 
-void bitmapClearPos(struct Bitmap* map,uint32_t pos)
+void bitmap_clear_pos(struct Bitmap* map,uint32_t pos)
 {
     ASSERT(pos < map->bits);
     map->base[pos >> 3] &= ~(0x80 >> (pos & 0x07)); 
 }
 
-int bitmapScan(struct Bitmap* map,uint32_t count)
+int bitmap_scan(struct Bitmap* map,uint32_t count)
 {//反正能实现需求，注释就懒得写了..
     uint32_t freeBitLine = 0;
     uint8_t freeBitIndex = 0;
@@ -76,7 +76,7 @@ int bitmapScan(struct Bitmap* map,uint32_t count)
 
             if(count == 1)
             {
-                bitmapSetPos(map,bitmapIndexStart);
+                bitmap_set_pos(map,bitmapIndexStart);
                 return bitmapIndexStart;
             }
 
@@ -90,7 +90,7 @@ int bitmapScan(struct Bitmap* map,uint32_t count)
         
             while(count_ < count)
             {
-                if(bitmapGetPos(map,bitmapIndexStart_) != 0)
+                if(bitmap_get_pos(map,bitmapIndexStart_) != 0)
                     break;
                 ++bitmapIndexStart_;
                 ++count_;
@@ -99,7 +99,7 @@ int bitmapScan(struct Bitmap* map,uint32_t count)
             if(count == count_)
             {
                 for(uint32_t i=0;i<count;++i)
-                    bitmapSetPos(map,bitmapIndexStart + i);        
+                    bitmap_set_pos(map,bitmapIndexStart + i);        
 
                 return bitmapIndexStart;
             }
@@ -113,15 +113,15 @@ int bitmapScan(struct Bitmap* map,uint32_t count)
     return -1;
 }
 
-void printBitmapMessage(const struct Bitmap* bitmap)
+void print_bitmap_message(const struct Bitmap* bitmap)
 {
-    printStr((char*)"Bitmap Start: 0x");
-    printInt(*(uint32_t*)bitmap->base);
-    printChar('\n');
-    printStr((char*)"Bitmap Bits: 0x");
-    printInt(bitmap->bits);
-    printChar('\n');
-    printStr((char*)"Bitmap Length: 0x");
-    printInt(bitmap->length);
-    printChar('\n');
+    print_str((char*)"Bitmap Start: 0x");
+    print_int(*(uint32_t*)bitmap->base);
+    print_char('\n');
+    print_str((char*)"Bitmap Bits: 0x");
+    print_int(bitmap->bits);
+    print_char('\n');
+    print_str((char*)"Bitmap Length: 0x");
+    print_int(bitmap->length);
+    print_char('\n');
 }

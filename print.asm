@@ -11,8 +11,8 @@ section .text
 ;-------------------    printStr    ---------------------
 ;功能描述：使用printChar完成printStr
 ;-------------------------------------------------------
-global printStr
-printStr:
+global print_str
+print_str:
     push ebx
     push ecx
     xor ecx,ecx
@@ -22,7 +22,7 @@ printStr:
     cmp cl,0
     jz .str_over
     push ecx
-    call printChar
+    call print_char
     add esp,4
     inc ebx
     jmp .goon
@@ -34,8 +34,8 @@ printStr:
 ;------------------------   printChar   -----------------------------
 ;功能描述:把栈中的1个字符写入光标所在处
 ;-------------------------------------------------------------------   
-global printChar
-printChar:
+global print_char
+print_char:
    pushad	   ;备份32位寄存器环境
    ;需要保证gs中为正确的视频段选择子,为保险起见,每次打印时都为gs赋值
    mov ax, SELECTOR_VIDEO	       ; 不能直接把立即数送入段寄存器
@@ -152,8 +152,8 @@ printChar:
 ;----------------- printInt ---------------------
 ;打印栈中参数
 ;------------------------------------------------
-global printInt
-printInt:
+global print_int
+print_int:
     pushad
     mov ebp,esp
     mov eax,[ebp+4*9]
@@ -199,7 +199,7 @@ printInt:
 
 .put_each_num:
     push ecx
-    call printChar
+    call print_char
     add esp,4
     inc edi
     mov cl,[put_int_buffer + edi]

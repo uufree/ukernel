@@ -2,13 +2,11 @@
 	> File Name: list.h
 	> Author: uuchen
 	> Mail: 1319081676@qq.com
-	> Created Time: 2017年12月18日 星期一 19时31分32秒
+	> Created Time: 2018年06月06日 星期三 18时17分03秒
  ************************************************************************/
 
 #ifndef _LIST_H
 #define _LIST_H
-
-//内核开发中通用的数据结构
 
 #include"stdint.h"
 
@@ -16,33 +14,31 @@
 #define elem2entry(structType,member,elemPtr) \
     (structType*)((int)elemPtr - offset(structType,member))
 
-//typedef bool (function)(struct ListNode* node,int args);
-
 struct ListNode
 {
-    struct ListNode* _prev;
-    struct ListNode* _next;
+    struct ListNode* prev;
+    struct ListNode* next;
 };
 
 struct List
 {
-    struct ListNode _head;
-    struct ListNode _tail;
+    struct ListNode head;
+    struct ListNode tail;
 };
 
 //List OPS
-void listInit(struct List* list);
-void listDestory(struct List* list);
-void listInsertBefore(struct ListNode* current,struct ListNode* newNode);
-void listInsertBack(struct ListNode* current,struct ListNode* newNode);
-void listPushBack(struct List* list,struct ListNode* node);
-void listPushFront(struct List* list,struct ListNode* node);
-struct ListNode* listPopFront(struct List* list);
-struct ListNode* listPopBack(struct List* list);
-void listRemove(struct ListNode* node);
-uint32_t listLength(struct List* list);
-uint32_t listEmpty(struct List* list);
-uint32_t listFind(struct List* list,struct ListNode* node);
-//struct ListNode* listTraversal(struct List* list,function func,int args);
+void list_init(struct List* list);
+void list_destory(struct List* list);
+void list_insert_before(struct ListNode* current,struct ListNode* newNode);
+void list_insert_back(struct ListNode* current,struct ListNode* newNode);
+void list_push_back(struct List* list,struct ListNode* node);
+void list_push_front(struct List* list,struct ListNode* node);
+struct ListNode* list_pop_front(struct List* list);
+struct ListNode* list_pop_back(struct List* list);
+void list_remove(struct ListNode* node);
+uint32_t list_length(struct List* list);
+uint32_t list_empty(struct List* list);
+uint32_t list_find(struct List* list,struct ListNode* node);
+
 
 #endif

@@ -1,5 +1,13 @@
-#ifndef __KERNEL_INTERRUPT_H
-#define __KERNEL_INTERRUPT_H
+/*************************************************************************
+	> File Name: interrupt.h
+	> Author: uuchen
+	> Mail: 1319081676@qq.com
+	> Created Time: 2018年06月06日 星期三 18时15分39秒
+ ************************************************************************/
+
+#ifndef _INTERRUPT_H
+#define _INTERRUPT_H
+
 #include "stdint.h"
 typedef void* intr_handler;
 void idt_init(void);
@@ -12,9 +20,10 @@ enum InterStatus {		 // 中断状态
     INTER_ON		         // 中断打开
 };
 
-enum InterStatus interGetStatus(void);
-enum InterStatus interSetStatus (enum InterStatus);
-enum InterStatus interEnable(void);
-enum InterStatus interDisable (void);
+enum InterStatus inter_get_status(void);
+enum InterStatus inter_set_status (enum InterStatus);
+enum InterStatus inter_enable(void);
+enum InterStatus inter_disable (void);
 void register_handler(uint8_t vector_no, intr_handler function);
+
 #endif

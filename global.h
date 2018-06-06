@@ -1,5 +1,13 @@
-#ifndef __KERNEL_GLOBAL_H
-#define __KERNEL_GLOBAL_H
+/*************************************************************************
+	> File Name: global.h
+	> Author: uuchen
+	> Mail: 1319081676@qq.com
+	> Created Time: 2018年06月06日 星期三 18时13分43秒
+ ************************************************************************/
+
+#ifndef _GLOBAL_H
+#define _GLOBAL_H
+
 #include "stdint.h"
 
 #define	 RPL0  0
@@ -28,6 +36,5 @@
 #define bool int
 #define true 1
 #define false 0
-
 
 #endif

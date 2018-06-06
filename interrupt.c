@@ -1,3 +1,10 @@
+/*************************************************************************
+	> File Name: interrupt.c
+	> Author: uuchen
+	> Mail: 1319081676@qq.com
+	> Created Time: 2018年06月06日 星期三 18时16分02秒
+ ************************************************************************/
+
 #include "interrupt.h"
 #include "stdint.h"
 #include "global.h"
@@ -56,7 +63,7 @@ static void pic_init(void) {
    outb (PIC_M_DATA, 0xfe);
    outb (PIC_S_DATA, 0xff);
 
-   printStr("   pic_init done\n");
+   print_str((char*)"pic_init done\n");
 }
 
 /* 创建中断门描述符 */
@@ -74,7 +81,7 @@ static void idt_desc_init(void) {
    for (i = 0; i < IDT_DESC_CNT; i++) {
       make_idt_desc(&idt[i], IDT_DESC_ATTR_DPL0, intr_entry_table[i]); 
    }
-   printStr("   idt_desc_init done\n");
+   print_str((char*)"idt_desc_init done\n");
 }
 
 /* 通用的中断处理函数,一般用在异常出现时的处理 */
@@ -85,18 +92,18 @@ static void general_intr_handler(uint8_t vec_nr) {
   /* 将光标置为0,从屏幕左上角清出一片打印异常信息的区域,方便阅读 */
    int cursor_pos = 0;
    while(cursor_pos < 320) {
-      printChar(' ');
+      print_char(' ');
       cursor_pos++;
    }
 
-   printStr("!!!!!!!      excetion message begin  !!!!!!!!\n");
-   printStr(intr_name[vec_nr]);
+   print_str((char*)"!!!!!!!      excetion message begin  !!!!!!!!\n");
+   print_str(intr_name[vec_nr]);
    if (vec_nr == 14) {	  // 若为Pagefault,将缺失的地址打印出来并悬停
       int page_fault_vaddr = 0; 
       asm ("movl %%cr2, %0" : "=r" (page_fault_vaddr));	  // cr2是存放造成page_fault的地址
-      printStr("\npage fault addr is ");printInt(page_fault_vaddr); 
+      print_str((char*)"\npage fault addr is ");print_int(page_fault_vaddr); 
    } 
-   printStr("\n!!!!!!!      excetion message end    !!!!!!!!\n");
+   print_str((char*)"\n!!!!!!!      excetion message end    !!!!!!!!\n");
   // 能进入中断处理程序就表示已经处在关中断情况下,
   // 不会出现调度进程的情况。故下面的死循环不会再被中断。
    while(1);
@@ -111,36 +118,36 @@ static void exception_init(void) {			    // 完成一般中断处理函数注册
  * 见kernel/kernel.S的call [idt_table + %1*4] */
       idt_table[i] = general_intr_handler;		    // 默认为general_intr_handler。
 							    // 以后会由register_handler来注册具体处理函数。
-      intr_name[i] = "unknown";				    // 先统一赋值为unknown 
+      intr_name[i] = (char*)"unknown";				    // 先统一赋值为unknown 
    }
-   intr_name[0] = "#DE Divide Error";
-   intr_name[1] = "#DB Debug Exception";
-   intr_name[2] = "NMI Interrupt";
-   intr_name[3] = "#BP Breakpoint Exception";
-   intr_name[4] = "#OF Overflow Exception";
-   intr_name[5] = "#BR BOUND Range Exceeded Exception";
-   intr_name[6] = "#UD Invalid Opcode Exception";
-   intr_name[7] = "#NM Device Not Available Exception";
-   intr_name[8] = "#DF Double Fault Exception";
-   intr_name[9] = "Coprocessor Segment Overrun";
-   intr_name[10] = "#TS Invalid TSS Exception";
-   intr_name[11] = "#NP Segment Not Present";
-   intr_name[12] = "#SS Stack Fault Exception";
-   intr_name[13] = "#GP General Protection Exception";
-   intr_name[14] = "#PF Page-Fault Exception";
+   intr_name[0] = (char*)"#DE Divide Error";
+   intr_name[1] = (char*)"#DB Debug Exception";
+   intr_name[2] = (char*)"NMI Interrupt";
+   intr_name[3] = (char*)"#BP Breakpoint Exception";
+   intr_name[4] = (char*)"#OF Overflow Exception";
+   intr_name[5] = (char*)"#BR BOUND Range Exceeded Exception";
+   intr_name[6] = (char*)"#UD Invalid Opcode Exception";
+   intr_name[7] = (char*)"#NM Device Not Available Exception";
+   intr_name[8] = (char*)"#DF Double Fault Exception";
+   intr_name[9] = (char*)"Coprocessor Segment Overrun";
+   intr_name[10] = (char*)"#TS Invalid TSS Exception";
+   intr_name[11] = (char*)"#NP Segment Not Present";
+   intr_name[12] = (char*)"#SS Stack Fault Exception";
+   intr_name[13] = (char*)"#GP General Protection Exception";
+   intr_name[14] = (char*)"#PF Page-Fault Exception";
    // intr_name[15] 第15项是intel保留项，未使用
-   intr_name[16] = "#MF x87 FPU Floating-Point Error";
-   intr_name[17] = "#AC Alignment Check Exception";
-   intr_name[18] = "#MC Machine-Check Exception";
-   intr_name[19] = "#XF SIMD Floating-Point Exception";
+   intr_name[16] = (char*)"#MF x87 FPU Floating-Point Error";
+   intr_name[17] = (char*)"#AC Alignment Check Exception";
+   intr_name[18] = (char*)"#MC Machine-Check Exception";
+   intr_name[19] = (char*)"#XF SIMD Floating-Point Exception";
 
 }
 
 /* 开中断并返回开中断前的状态*/
-enum InterStatus interEnable() {
+enum InterStatus inter_enable() {
     
     enum InterStatus old_status;
-   if (INTER_ON == interGetStatus()) {
+   if (INTER_ON == inter_get_status()) {
       old_status = INTER_ON;
    } else {
       old_status = INTER_OFF;
@@ -151,9 +158,9 @@ enum InterStatus interEnable() {
 }
 
 /* 关中断,并且返回关中断前的状态 */
-enum InterStatus interDisable() {     
+enum InterStatus inter_disable() {     
    enum InterStatus old_status;
-   if (INTER_ON == interGetStatus()) {
+   if (INTER_ON == inter_get_status()) {
       old_status = INTER_ON;
       asm volatile("cli" : : : "memory"); // 关中断,cli指令将IF位置0
       return old_status;
@@ -164,12 +171,12 @@ enum InterStatus interDisable() {
 }
 
 /* 将中断状态设置为status */
-enum InterStatus interSetStatus(enum InterStatus status) {
-   return status & INTER_ON ? interEnable() : interDisable();
+enum InterStatus inter_set_status(enum InterStatus status) {
+   return status & INTER_ON ? inter_enable() : inter_disable();
 }
 
 /* 获取当前中断状态 */
-enum InterStatus interGetStatus() {
+enum InterStatus inter_get_status() {
    uint32_t eflags = GET_EFLAGS();
    return (EFLAGS_IF & eflags) ? INTER_ON : INTER_OFF;
 }
@@ -183,7 +190,7 @@ void register_handler(uint8_t vector_no, intr_handler function) {
 
 /*完成有关中断的所有初始化工作*/
 void idt_init() {
-   printStr("idt_init start\n");
+   print_str((char*)"idt_init start\n");
    idt_desc_init();	   // 初始化中断描述符表
    exception_init();	   // 异常名初始化并注册通常的中断处理函数
    pic_init();		   // 初始化8259A
@@ -191,5 +198,6 @@ void idt_init() {
    /* 加载idt */
    uint64_t idt_operand = ((sizeof(idt) - 1) | ((uint64_t)(uint32_t)idt << 16));
    asm volatile("lidt %0" : : "m" (idt_operand));
-   printStr("idt_init done\n");
+   print_str((char*)"idt_init done\n");
 }
+

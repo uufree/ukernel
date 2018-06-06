@@ -1,4 +1,13 @@
-#ifndef __KERNEL_INIT_H
-#define __KERNEL_INIT_H
+/*************************************************************************
+	> File Name: init.h
+	> Author: uuchen
+	> Mail: 1319081676@qq.com
+	> Created Time: 2018年06月06日 星期三 18时14分19秒
+ ************************************************************************/
+
+#ifndef _INIT_H
+#define _INIT_H
+
 void init_all(void);
+
 #endif

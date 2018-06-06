@@ -1,30 +1,30 @@
 /*************************************************************************
-	> File Name: MemoryPool.c
+	> File Name: memory_pool.c
 	> Author: uuchen
 	> Mail: 1319081676@qq.com
-	> Created Time: 2017年11月18日 星期六 12时25分20秒
+	> Created Time: 2018年06月06日 星期三 16时57分11秒
  ************************************************************************/
 
-#include"MemoryPool.h"
+#include"memory_pool.h"
 #include"debug.h"
 #include"memory.h"
 #include"print.h"
 #include"string.h"
 
-void initVirtualPool(struct VirtualPool* pool,uint32_t bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_)
+void init_virtual_pool(struct VirtualPool* pool,uint32_t bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_)
 {
-    bitmapInit(&pool->bitmap,bitmapBaseAddr_,length_,PG_SIZE);
-    pool->addrStart = addrStart_;
-    pool->poolSize = poolSize_;
+    bitmap_init(&pool->bitmap,bitmapBaseAddr_,length_,PG_SIZE);
+    pool->addr_start = addrStart_;
+    pool->pool_size = poolSize_;
 //    printStr((char*)"\nVirtualPool:\n");
 //    printBitmapMessage(&pool->bitmap);
 }
 
-void initPhysicalPool(struct PhysicalPool* pool,uint32_t bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_)
+void init_physical_pool(struct PhysicalPool* pool,uint32_t bitmapBaseAddr_,uint32_t length_,uint32_t addrStart_,uint32_t poolSize_)
 {
-    bitmapInit(&pool->bitmap,bitmapBaseAddr_,length_,PG_SIZE);
-    pool->addrStart = addrStart_;
-    pool->poolSize = poolSize_;
+    bitmap_init(&pool->bitmap,bitmapBaseAddr_,length_,PG_SIZE);
+    pool->addr_start = addrStart_;
+    pool->pool_size = poolSize_;
 //    printStr((char*)"\nPhysicalPool:\n");
 //    printBitmapMessage(&pool->bitmap);
 }
@@ -42,7 +42,7 @@ void initPhysicalPool(struct PhysicalPool* pool,uint32_t bitmapBaseAddr_,uint32_
 //bug2
 //多次分配kernelPhysicalMemory,第9次分配时会出错
 //bitmapScan分配出错...
-uint32_t getPoolAddr(struct Memory* memory_,enum PoolFlags flag,uint32_t count)
+uint32_t get_pool_addr(struct Memory* memory_,enum PoolFlags flag,uint32_t count)
 {
     int idx = 0;
     uint32_t addr = 0;
@@ -50,26 +50,26 @@ uint32_t getPoolAddr(struct Memory* memory_,enum PoolFlags flag,uint32_t count)
     switch(flag)
     {
         case PF_KERNEL_VIRTUAL:
-            idx = bitmapScan(&memory_->kernelMemory.kernelVPool.bitmap,count);
+            idx = bitmap_scan(&memory_->kernel_memory.kernel_vir_pool.bitmap,count);
             if(idx == -1)
                 return 0;
-            addr = memory_->memoryMeesage.kernelVirStart + idx * PG_SIZE;
+            addr = memory_->memory_message.kernel_vir_start + idx * PG_SIZE;
             break;
         case PF_KERNEL_PHYSICAL:
 //            printStr((char*)"1\n");
-            idx = bitmapScan(&memory_->kernelMemory.kernelPPool.bitmap,count);
+            idx = bitmap_scan(&memory_->kernel_memory.kernel_phy_pool.bitmap,count);
 //            printStr((char*)"2\n");
             if(idx == -1)
                 return 0;
-            addr = memory_->memoryMeesage.kernelPhyStart + idx * PG_SIZE;
+            addr = memory_->memory_message.kernel_phy_start + idx * PG_SIZE;
             break;
         case PF_USER_VIRTUAL:
             break;
         case PF_USER_PHYSICAL:
-            idx = bitmapScan(&memory_->userMemory.userPPool.bitmap,count);
+            idx = bitmap_scan(&memory_->user_memory.user_phy_pool.bitmap,count);
             if(idx == -1)
                 return 0;
-            addr = memory_->memoryMeesage.userPhyStart + idx * PG_SIZE;
+            addr = memory_->memory_message.user_phy_start + idx * PG_SIZE;
             break;
         default:
             
@@ -78,4 +78,5 @@ uint32_t getPoolAddr(struct Memory* memory_,enum PoolFlags flag,uint32_t count)
     
     return addr;
 }
+
 

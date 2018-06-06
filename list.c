@@ -2,125 +2,109 @@
 	> File Name: list.c
 	> Author: uuchen
 	> Mail: 1319081676@qq.com
-	> Created Time: 2017年12月18日 星期一 19时31分36秒
+	> Created Time: 2018年06月06日 星期三 18时17分30秒
  ************************************************************************/
 
 #include"list.h"
 #include"interrupt.h"
 
-void listInit(struct List* list)
+void list_init(struct List* list)
 {
-    list->_head._prev = (void*)0;
-    list->_head._next = &list->_tail;
-    list->_tail._prev = &list->_head;
-    list->_tail._next = (void*)0;
+    list->head.prev = (void*)0;
+    list->head.next = &list->tail;
+    list->tail.prev = &list->head;
+    list->tail.next = (void*)0;
 }
 
-void listDestory(struct List* list)
+void list_destory(struct List* list)
 {
-    enum InterStatus status = interDisable();
-    struct ListNode* currentNode = list->_head._next;
-    while(currentNode != &list->_tail)
+    enum InterStatus status = inter_disable();
+    struct ListNode* currentNode = list->head.next;
+    while(currentNode != &list->tail)
     {
-        listRemove(currentNode);
-        currentNode = currentNode->_next;
+        list_remove(currentNode);
+        currentNode = currentNode->next;
     }
-    interSetStatus(status);
+    inter_set_status(status);
 }
 
-void listInsertBefore(struct ListNode* currentNode,struct ListNode* node)
+void list_insert_before(struct ListNode* currentNode,struct ListNode* node)
 {
-    enum InterStatus status = interDisable();
-    struct ListNode* elem = currentNode->_prev;
-    elem->_next = node;
-    node->_prev = elem;
-    node->_next = currentNode;
-    currentNode->_prev = node;
-    interSetStatus(status);
+    enum InterStatus status = inter_disable();
+    struct ListNode* elem = currentNode->prev;
+    elem->next = node;
+    node->prev = elem;
+    node->next = currentNode;
+    currentNode->prev = node;
+    inter_set_status(status);
 }
 
-void listInsertBack(struct ListNode* currentNode,struct ListNode* node)
+void list_insert_back(struct ListNode* currentNode,struct ListNode* node)
 {
-    listInsertBefore(currentNode->_next,node);
+    list_insert_before(currentNode->next,node);
 }
 
-void listPushBack(struct List* list,struct ListNode* node)
+void list_push_back(struct List* list,struct ListNode* node)
 {
-    listInsertBefore(&list->_tail,node);
+    list_insert_before(&list->tail,node);
 }
 
-void listPushFront(struct List* list,struct ListNode* node)
+void list_push_front(struct List* list,struct ListNode* node)
 {
-    listInsertBack(&list->_head,node);
+    list_insert_back(&list->head,node);
 }
 
-void listRemove(struct ListNode* node)
+void list_remove(struct ListNode* node)
 {
-    enum InterStatus status = interDisable();
-    node->_prev->_next = node->_next;
-    node->_next->_prev = node->_prev;
-    interSetStatus(status);
+    enum InterStatus status = inter_disable();
+    node->prev->next = node->next;
+    node->next->prev = node->prev;
+    inter_set_status(status);
 }
 
-struct ListNode* listPopFront(struct List* list)
+struct ListNode* list_pop_front(struct List* list)
 {
-    struct ListNode* front = list->_head._next;
-    listRemove(list->_head._next);
+    struct ListNode* front = list->head.next;
+    list_remove(list->head.next);
     return front;
 }
 
-struct ListNode* listPopBack(struct List* list)
+struct ListNode* list_pop_back(struct List* list)
 {
-    struct ListNode* back = list->_tail._prev;
-    listRemove(list->_tail._prev);
+    struct ListNode* back = list->tail.prev;
+    list_remove(list->tail.prev);
     return back;
 }
 
-uint32_t listLength(struct List* list)
+uint32_t list_length(struct List* list)
 {
     uint32_t count = 0;
-    struct ListNode* node = list->_head._next;
+    struct ListNode* node = list->head.next;
 
-    while(node != &list->_tail)
+    while(node != &list->tail)
     {
         ++count;
-        node = node->_next;
+        node = node->next;
     }
 
     return count;
 }
 
-uint32_t listEmpty(struct List* list)
+uint32_t list_empty(struct List* list)
 {
-    return !(list->_head._next == &list->_tail ? 1 : 0);
+    return !(list->head.next == &list->tail ? 1 : 0);
 }
 
-uint32_t listFind(struct List* list,struct ListNode* node)
+uint32_t list_find(struct List* list,struct ListNode* node)
 {
-     struct ListNode* currentNode = list->_head._next;
-     while(currentNode != &list->_tail)
+     struct ListNode* currentNode = list->head.next;
+     while(currentNode != &list->tail)
      {
          if(currentNode == node)
              return 1;
-         currentNode = currentNode->_next;
+         currentNode = currentNode->next;
      }
      return 0;
 }
 
-/*
-struct ListNode* listTraversal(struct List* list,function func,int args)
-{
-    struct ListNode* currentNode = list->_head._next;
-    if(listEmpty(list))
-        return NULL;
 
-    while(currentNode != &list->_tail)
-    {
-        if(func(currentNode,args))
-            return currentNode;
-        currentNode = currentNode->_next;
-    }
-
-    return NULL;
-}
-*/

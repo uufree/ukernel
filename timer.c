@@ -1,3 +1,10 @@
+/*************************************************************************
+	> File Name: timer.c
+	> Author: uuchen
+	> Mail: 1319081676@qq.com
+	> Created Time: 2018年06月06日 星期三 18时23分01秒
+ ************************************************************************/
+
 #include "timer.h"
 #include "io.h"
 #include "print.h"
@@ -48,9 +55,10 @@ static void intr_timer_handler(void) {
 
 /* 初始化PIT8253 */
 void timer_init() {
-   printStr("timer_init start\n");
+   print_str((char*)"timer_init start\n");
    /* 设置8253的定时周期,也就是发中断的周期 */
    frequency_set(CONTRER0_PORT, COUNTER0_NO, READ_WRITE_LATCH, COUNTER_MODE, COUNTER0_VALUE);
-   register_handler(0x20, intr_timer_handler);
-   printStr("timer_init done\n");
+   register_handler(0x20, (void*)intr_timer_handler);
+   print_str((char*)"timer_init done\n");
 }
+

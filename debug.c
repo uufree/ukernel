@@ -1,3 +1,10 @@
+/*************************************************************************
+	> File Name: debug.c
+	> Author: uuchen
+	> Mail: 1319081676@qq.com
+	> Created Time: 2018年06月06日 星期三 18时13分10秒
+ ************************************************************************/
+
 #include "debug.h"
 #include "print.h"
 #include "interrupt.h"
@@ -8,11 +15,12 @@ void panic_spin(char* filename,	       \
 		const char* func,      \
 		const char* condition) \
 {
-   interDisable();	// 因为有时候会单独调用panic_spin,所以在此处关中断。
-   printStr("\n\n\n!!!!! error !!!!!\n");
-   printStr("filename:");printStr(filename);printStr("\n");
-   printStr("line:0x");printInt(line);printStr("\n");
-   printStr("function:");printStr((char*)func);printStr("\n");
-   printStr("condition:");printStr((char*)condition);printStr("\n");
+   inter_disable();	// 因为有时候会单独调用panic_spin,所以在此处关中断。
+   print_str((char*)"\n\n\n!!!!! error !!!!!\n");
+   print_str((char*)"filename:");print_str(filename);print_str((char*)"\n");
+   print_str((char*)"line:0x");print_int(line);print_str((char*)"\n");
+   print_str((char*)"function:");print_str((char*)func);print_str((char*)"\n");
+   print_str((char*)"condition:");print_str((char*)condition);print_str((char*)"\n");
    while(1);
 }
+

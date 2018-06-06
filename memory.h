@@ -2,7 +2,7 @@
 	> File Name: memory.h
 	> Author: uuchen
 	> Mail: 1319081676@qq.com
-	> Created Time: 2017年11月09日 星期四 20时18分28秒
+	> Created Time: 2018年06月06日 星期三 18时18分18秒
  ************************************************************************/
 
 #ifndef _MEMORY_H
@@ -11,7 +11,7 @@
 #include"stdint.h"
 #include"print.h"
 #include"bitmap.h"
-#include"MemoryPool.h"
+#include"memory_pool.h"
 
 #define BITMAP_BASE  0xc009a000
 #define K_VIR_MEMORY_BASE  0xc0100000
@@ -29,68 +29,69 @@
 //存储所有关于内存的信息
 struct MemoryMessage
 {
-    uint32_t allMemory;
-    uint32_t usedPageTableSize;
-    uint32_t usedMemory;
-    uint32_t freeMemory;
-    uint32_t freePages;
+    uint32_t all_memory;
+    uint32_t used_page_table_size;
+    uint32_t used_memory;
+    uint32_t free_memory;
+    uint32_t free_pages;
 
-    uint32_t kernelFreePages;
-    uint32_t kernelPhyStart;
-    uint32_t kernelVirStart;
-    uint32_t kernelPhyBitmapBaseAddr;
-    uint32_t kernelVirBitmapBaseAddr;
-    uint32_t kernelBitmapLenght;
+    uint32_t kernel_free_pages;
+    uint32_t kernel_phy_start;
+    uint32_t kernel_vir_start;
+    uint32_t kernel_phy_bitmap_base_addr;
+    uint32_t kernel_vir_bitmap_base_addr;
+    uint32_t kernel_bitmap_lenght;
 
-    uint32_t userFreePages;
-    uint32_t userPhyStart;
-    uint32_t userPhyBitmapBaseAddr;
-    uint32_t userBitmapLenght;
+    uint32_t user_free_pages;
+    uint32_t user_phy_start;
+    uint32_t user_phy_bitmap_base_addr;
+    uint32_t user_bitmap_lenght;
 };
 
 //内核内存池，分配出来的是直接可供使用的内核内存
 struct KernelMemory
 {
-    struct VirtualPool kernelVPool;
-    struct PhysicalPool kernelPPool;
+    struct VirtualPool kernel_vir_pool;
+    struct PhysicalPool kernel_phy_pool;
 };
 
 //用户物理内存池，分配出来的仅仅只是物理内存，还需要在用户空间做映射
 struct UserMemory
 {
-    struct PhysicalPool userPPool;
+    struct PhysicalPool user_phy_pool;
 };
 
 //全局变量
 struct Memory
 {
-    struct MemoryMessage memoryMeesage;
-    struct KernelMemory kernelMemory;
-    struct UserMemory userMemory;
+    struct MemoryMessage memory_message;
+    struct KernelMemory kernel_memory;
+    struct UserMemory user_memory;
 };
 
 //所有操作围绕着这一个全局变量
 struct Memory memory;
 
 //MemoryMessage operator
-void initMemoryMessage(struct MemoryMessage* message);
-void printMemoryMessage(struct MemoryMessage* message);
+void init_memory_message(struct MemoryMessage* message);
+void print_memory_message(struct MemoryMessage* message);
 
 //Kernel Memory operator
-void initKernelMemory(struct KernelMemory* kMemory,struct MemoryMessage* memoryMeesage);
-uint32_t* mallocPageInKernelMemory(uint32_t count);
+void init_kernel_memory(struct KernelMemory* kMemory,struct MemoryMessage* memoryMeesage);
+uint32_t* malloc_page_kernel_memory(uint32_t count);
 
 //user Memory operator
-void initUserMemory(struct UserMemory* uMemory,struct MemoryMessage* memoryMeesage);
-uint32_t* mallocPageInUserMemory(); 
+void init_user_memory(struct UserMemory* uMemory,struct MemoryMessage* memoryMeesage);
+uint32_t* malloc_page_user_memory(); 
 
 //memory operator
-void initMemory(); 
+void init_memory(); 
 
 //usually operator
-uint32_t* getVaddrPDE(uint32_t vaddr);
-static uint32_t* getVaddrPTE(uint32_t vaddr);
-void makePageMap(uint32_t vaddr,uint32_t paddr);
+uint32_t* get_vir_addr_PDE(uint32_t vaddr);
+static uint32_t* get_vir_addr_PTE(uint32_t vaddr);
+void make_page_map(uint32_t vaddr,uint32_t paddr);
 
 
 #endif
+
