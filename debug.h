@@ -1,12 +1,5 @@
-/*************************************************************************
-	> File Name: debug.h
-	> Author: uuchen
-	> Mail: 1319081676@qq.com
-	> Created Time: 2018年06月06日 星期三 18时12分42秒
- ************************************************************************/
-
-#ifndef _DEBUG_H
-#define _DEBUG_H
+#ifndef __KERNEL_DEBUG_H
+#define __KERNEL_DEBUG_H
 
 void panic_spin(char* filename, int line, const char* func, const char* condition);
 
@@ -17,6 +10,8 @@ void panic_spin(char* filename, int line, const char* func, const char* conditio
 #define PANIC(...) panic_spin (__FILE__, __LINE__, __func__, __VA_ARGS__)
  /***********************************************************************/
 
+/*如果ASSERT断言成立，无事发生*/
+/*如果ASSERT断言不成立，程序立刻交出控制权*/
 #ifdef NDEBUG
    #define ASSERT(CONDITION) ((void)0)
 #else
@@ -27,4 +22,4 @@ void panic_spin(char* filename, int line, const char* func, const char* conditio
       }
 #endif /*__NDEBUG */
 
-#endif
+#endif /*__KERNEL_DEBUG_H*/

@@ -3,7 +3,7 @@ section .text
 global switch_to
 switch_to:
    ;栈中此处是返回地址	       
-   push esi
+   push esi ;根据ABI规定，将相应的寄存器压入栈中
    push edi
    push ebx
    push ebp

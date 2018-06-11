@@ -1,99 +1,98 @@
-%include"boot.inc"
-    
-section mbr vstart=0x7c00
-    mov ax,cs
-    mov ds,ax
-    mov es,ax
-    mov ss,ax
-    mov fs,ax
-    mov sp,0x7c00
-    mov ax,0xb800
-    mov gs,ax
+;mbr位于第0磁道1扇区，占用512字节，在开机启动后加载此处的代码。
+;BIOS之后，首先执行MBR处的代码，具体作用为将Loader程序加载到内存中合适的位置
+;MBR中有466字节的空间存储指令与数据，64字节的分区表以及2字节的结尾：0x55 0xaa
+;在开机流程中属于承上启下的作用
+%include "boot.inc"
+SECTION MBR vstart=0x7c00         
+   mov ax,cs      
+   mov ds,ax
+   mov es,ax
+   mov ss,ax
+   mov fs,ax
+   mov sp,0x7c00
+   mov ax,0xb800
+   mov gs,ax
 
-;清屏
-    mov ax,0600h
-    mov bx,0700h
-    mov cx,0
-    mov dx,184fh
-    int 10h
+   mov     ax, 0600h
+   mov     bx, 0700h
+   mov     cx, 0                   
+   mov     dx, 184fh		   
+				   
+   int     10h                     
 
-;显示字符串
-    mov si,message
-    mov di,0
-    mov cx,end-message
-@g:
-    mov al,[si]
-    mov [gs:di],al
-    inc di
-    mov byte [gs:di],0x07
-    inc di
-    inc si
-    loop @g
-    
+   mov byte [gs:0x00],'1'
+   mov byte [gs:0x01],0xA4
 
-    mov eax,LOADER_START_SECTOR
-    mov bx,LOADER_BASE_ADDR
-    mov cx,4
-    call readDisk
-    jmp LOADER_BASE_ADDR + 0x300
+   mov byte [gs:0x02],' '
+   mov byte [gs:0x03],0xA4
 
-readDisk:
-    mov esi,eax
-    mov di,cx
+   mov byte [gs:0x04],'M'
+   mov byte [gs:0x05],0xA4	   
 
-;设置要读取的扇区数
-    mov dx,0x1f2
-    mov al,cl
-    out dx,al
+   mov byte [gs:0x06],'B'
+   mov byte [gs:0x07],0xA4
 
-    mov eax,esi
-;设置LBA地址
-    mov dx,0x1f3
-    out dx,al
+   mov byte [gs:0x08],'R'
+   mov byte [gs:0x09],0xA4
+	 
+   mov eax,LOADER_START_SECTOR	 
+   mov bx,LOADER_BASE_ADDR       
+   mov cx,4			 
+   call rd_disk_m_16		 
+  
+   jmp LOADER_BASE_ADDR + 0x300
+       
+rd_disk_m_16:	   
+      mov esi,eax	  
+      mov di,cx		
+      
+      mov dx,0x1f2
+      mov al,cl
+      out dx,al            
 
-    mov cl,8
-    shr eax,cl
-    mov dx,0x1f4
-    out dx,al
+      mov eax,esi	
 
-    shr eax,cl
-    mov dx,0x1f5
-    out dx,al
+      mov dx,0x1f3                       
+      out dx,al                          
 
-    shr eax,cl
-    and al,0x0f
-    or al,0xe0
-    mov dx,0x1f6
-    out dx,al
-;向0x1f7端口写命令，0x20
-    mov dx,0x1f7
-    mov al,0x20
-    out dx,al
-;监测硬件状态
-@notReady:
-    nop 
-    in al,dx
-    and al,0x88
-    cmp al,0x08
-    jnz @notReady
-;从0x1f0端口读取数据
-    mov ax,di
-    mov dx,256
-    mul dx
-    mov cx,ax
+      mov cl,8
+      shr eax,cl
+      mov dx,0x1f4
+      out dx,al
 
-    mov dx,0x1f0
-@goOnRead:
-    in ax,dx
-    mov [bx],ax
-    add bx,2
-    loop @goOnRead
+      shr eax,cl
+      mov dx,0x1f5
+      out dx,al
 
-    ret
+      shr eax,cl
+      and al,0x0f	
+      or al,0xe0	   
+      mov dx,0x1f6
+      out dx,al
 
-message db "I'm mbr!Welcome come to ukernel!"
-end:
-    jmp near $
-    times 510-($-$$) db 0
-    db 0x55,0xaa
+      mov dx,0x1f7
+      mov al,0x20                        
+      out dx,al
 
+  .not_ready:
+      nop
+      in al,dx
+      and al,0x88	   
+      cmp al,0x08
+      jnz .not_ready	   
+
+      mov ax, di
+      mov dx, 256
+      mul dx
+      mov cx, ax	   
+      mov dx, 0x1f0
+  
+  .go_on_read:
+      in ax,dx
+      mov [bx],ax
+      add bx,2		  
+      loop .go_on_read
+      ret
+
+   times 510-($-$$) db 0
+   db 0x55,0xaa

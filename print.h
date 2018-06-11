@@ -1,17 +1,9 @@
-/*************************************************************************
-	> File Name: print.h
-	> Author: uuchen
-	> Mail: 1319081676@qq.com
-	> Created Time: 2017年10月10日 星期二 18时21分00秒
- ************************************************************************/
-
-#ifndef _PRINT_H
-#define _PRINT_H
-
-#include"stdint.h"
-
-void print_char(uint8_t ch);
+#ifndef __LIB_KERNEL_PRINT_H
+#define __LIB_KERNEL_PRINT_H
+#include "stdint.h"
+void print_char(uint8_t char_asci);
 void print_str(char* message);
-void print_int(uint32_t number);
-
+void print_int(uint32_t num);	 // 以16进制打印
+void set_cursor(uint32_t cursor_pos);
 #endif
+
