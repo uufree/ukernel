@@ -6,8 +6,8 @@ extern idt_table		 ;idt_table是C中注册的中断处理程序数组
 
 section .data
 global intr_entry_table
-
 intr_entry_table:
+
 %macro VECTOR 2
 section .text
 intr%1entry:		 ; 每个中断处理程序都要压入中断向量号,所以一个中断类型一个中断处理程序，自己知道自己的中断向量号是多少
